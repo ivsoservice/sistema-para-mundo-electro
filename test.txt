@@ -1,0 +1,10 @@
+INICIO 
+INICIO 
+carpeta OK 
+FIN 
+INICIO 
+carpeta OK 
+FIN 
+INICIO 
+carpeta OK 
+FIN 

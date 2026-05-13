@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mundo Electro - Sistema</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+<style>
+body{font-size:14px;}
+.card-box{border-radius:10px;padding:15px;color:#fff;}
+.bg-main{background:#343a40;}
+.bg-ok{background:#28a745;}
+.bg-warn{background:#ffc107;color:#000;}
+
+.prio-alta{background:#dc3545;color:#fff;padding:4px;border-radius:6px;}
+.prio-media{background:#ffc107;color:#000;padding:4px;border-radius:6px;}
+.prio-baja{background:#28a745;color:#fff;padding:4px;border-radius:6px;}
+
+tr{cursor:pointer;}
+
+.btn-modern{
+border:none;
+border-radius:8px;
+padding:6px 12px;
+font-size:13px;
+font-weight:500;
+transition:0.2s;
+margin-right:4px;
+}
+
+.btn-modern:hover{
+transform:translateY(-1px);
+opacity:0.9;
+}
+
+.btn-main{background:#343a40;color:#fff;}
+.btn-ok{background:#28a745;color:#fff;}
+.btn-warn{background:#ffc107;color:#000;}
+.btn-danger{background:#dc3545;color:#fff;}
+</style>
+</head>
+
+<body class="hold-transition sidebar-mini">
+
+<!-- LOGIN -->
+<div id="loginBox" class="login-page">
+<div class="login-box">
+<div class="card p-4 text-center">
+
+<h4>MUNDO ELECTRO</h4>
+
+<input id="user" class="form-control mb-2" placeholder="Usuario">
+
+<input id="pass" type="password" class="form-control mb-2" placeholder="Password">
+
+<button onclick="login()" class="btn-modern btn-main w-100">
+Ingresar
+</button>
+
+<div id="err" class="text-danger mt-2"></div>
+
+</div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;" class="wrapper">
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+
+<a class="brand-link text-center">
+MUNDO ELECTRO
+</a>
+
+<div class="sidebar">
+
+<ul class="nav nav-pills nav-sidebar flex-column">
+
+<li class="nav-item">
+<a onclick="vista('panel')" class="nav-link">
+Panel Principal
+</a>
+</li>
+
+<li class="nav-item">
+<a onclick="vista('diario')" class="nav-link">
+Pago Diario
+</a>
+</li>
+
+<li class="nav-item">
+<a onclick="vista('distribuidora')" class="nav-link">
+Distribuidora
+</a>
+</li>
+
+<li class="nav-item">
+<a onclick="vista('historial')" class="nav-link">
+Historial
+</a>
+</li>
+
+<li class="nav-item">
+<a onclick="vista('usuarios')" class="nav-link">
+Usuarios
+</a>
+</li>
+
+<li class="nav-item">
+<a onclick="vista('logs')" class="nav-link">
+Logs
+</a>
+</li>
+
+</ul>
+
+</div>
+</aside>
+
+<div class="content-wrapper p-3">
+
+<h3 id="tituloVista" class="mb-3">
+Panel Principal
+</h3>
+
+<!-- PANEL -->
+<div id="panel">
+
+<div class="row">
+
+<div class="col-md-4">
+<div class="card-box bg-main">
+<h3 id="total">0</h3>
+Total
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card-box bg-ok">
+<h3 id="cDiario">0</h3>
+Pago Diario
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card-box bg-warn">
+<h3 id="cDistribuidora">0</h3>
+Distribuidora
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- DIARIO -->
+<div id="diario" style="display:none;">
+
+<button onclick="abrir('diario')" class="btn-modern btn-main mb-2">
+Nuevo Ticket
+</button>
+
+<table class="table table-hover">
+<tbody id="listaDiario"></tbody>
+</table>
+
+<div class="mt-2">
+<button class="btn-modern btn-main" onclick="anteriorPagina()">
+Anterior
+</button>
+
+<span id="infoPagina"></span>
+
+<button class="btn-modern btn-main" onclick="siguientePagina()">
+Siguiente
+</button>
+</div>
+
+</div>
+
+<!-- DISTRIBUIDORA -->
+<div id="distribuidora" style="display:none;">
+
+<button onclick="abrir('distribuidora')" class="btn-modern btn-main mb-2">
+Nuevo Ticket
+</button>
+
+<table class="table table-hover">
+<tbody id="listaDistribuidora"></tbody>
+</table>
+
+<div class="mt-2">
+<button class="btn-modern btn-main" onclick="anteriorPagina()">
+Anterior
+</button>
+
+<span id="infoPagina2"></span>
+
+<button class="btn-modern btn-main" onclick="siguientePagina()">
+Siguiente
+</button>
+</div>
+
+</div>
+
+<!-- HISTORIAL -->
+<div id="historial" style="display:none;">
+<table class="table">
+<tbody id="listaHistorial"></tbody>
+</table>
+</div>
+
+<!-- USERS -->
+<div id="usuarios" style="display:none;">
+
+<div class="mb-2">
+
+<input id="newUser" placeholder="Usuario">
+
+<input id="newPass" placeholder="Pass">
+
+<select id="newRole">
+<option value="user">Usuario</option>
+<option value="admin">Admin</option>
+</select>
+
+<button onclick="crearUsuario()" class="btn-modern btn-main">
+Crear
+</button>
+
+</div>
+
+<table class="table">
+<tbody id="listaUsuarios"></tbody>
+</table>
+
+</div>
+
+<!-- LOGS -->
+<div id="logs" style="display:none;">
+
+<div class="mb-2">
+
+<input id="fUser" placeholder="Usuario">
+<input id="fAccion" placeholder="Acción">
+
+<input type="date" id="fDesde">
+<input type="date" id="fHasta">
+
+<button onclick="cargarLogs()" class="btn-modern btn-main">
+Filtrar
+</button>
+
+<button onclick="exportLogs()" class="btn-modern btn-ok">
+Exportar CSV
+</button>
+
+</div>
+
+<table class="table table-striped">
+
+<thead>
+<tr>
+<th>Usuario</th>
+<th>Acción</th>
+<th>Detalle</th>
+<th>Nivel</th>
+<th>Fecha</th>
+</tr>
+</thead>
+
+<tbody id="listaLogs"></tbody>
+
+</table>
+
+</div>
+
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modal">
+
+<div class="modal-dialog">
+
+<div class="modal-content p-3">
+
+<select id="estado" class="form-control mb-1">
+  <option value="Ingresado">Ingresado</option>
+  <option value="En proceso">En proceso</option>
+  <option value="Resuelto">Resuelto</option>
+</select>
+
+<input id="titulo" class="form-control mb-1" placeholder="Producto">
+
+<input id="cliente" class="form-control mb-1" placeholder="Cliente">
+
+<input id="marca" class="form-control mb-1" placeholder="Marca">
+
+<input id="fechaIngreso" type="date" class="form-control mb-1">
+
+<input id="tecnico" class="form-control mb-1" placeholder="Recepciona">
+
+<textarea id="descripcion" class="form-control mb-1" placeholder="Info"></textarea>
+
+<select id="prioridad" class="form-control mb-1">
+  <option value="baja">Baja</option>
+  <option value="media">Media</option>
+  <option value="alta">Alta</option>
+</select>
+
+
+<div class="d-flex justify-content-between">
+
+<button type="button"
+onclick="cerrarModal()"
+class="btn-modern btn-danger">
+Cancelar
+</button>
+
+<button type="button"
+onclick="guardar()"
+class="btn-modern btn-ok">
+Guardar
+</button>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- DETALLE -->
+<div class="modal fade" id="detalleModal">
+
+<div class="modal-dialog">
+
+<div class="modal-content p-3">
+
+<h5>Detalle del Caso</h5>
+
+<p><b>CASO:</b> <span id="dCaso"></span></p>
+<p><b>Producto:</b> <span id="dTitulo"></span></p>
+<p><b>Cliente:</b> <span id="dCliente"></span></p>
+<p><b>Marca:</b> <span id="dMarca"></span></p>
+<p><b>Fecha:</b> <span id="dFecha"></span></p>
+<p><b>Técnico:</b> <span id="dTecnico"></span></p>
+<p><b>Prioridad:</b> <span id="dPrioridad"></span></p>
+<p><b>Estado:</b> <span id="dEstado"></span></p>
+<p><b>Descripción:</b> <span id="dDesc"></span></p>
+
+</div>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+let tipoActual='diario';
+let tipoTicket='diario';
+let editId=null;
+let paginaDiario = 1;
+let paginaDistribuidora = 1;
+
+document.addEventListener("keydown",function(e){
+
+if(e.key==="Enter" && loginBox.style.display!=="none"){
+login();
+}
+
+});
+
+function login(){
+
+fetch('/api/login',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+username:user.value,
+password:pass.value
+})
+})
+.then(r=>{
+
+if(!r.ok){
+err.innerText="Usuario o contraseña incorrecta";
+return;
+}
+
+loginBox.style.display='none';
+app.style.display='block';
+
+cargar();
+
+setInterval(cargar,3000);
+
+});
+
+}
+
+function vista(v){
+
+const titulos={
+panel:'Panel Principal',
+diario:'Pago Diario',
+distribuidora:'Distribuidora',
+historial:'Historial',
+usuarios:'Usuarios',
+logs:'Logs'
+};
+
+tituloVista.innerText=titulos[v];
+
+['panel','diario','distribuidora','historial','usuarios','logs']
+.forEach(x=>document.getElementById(x).style.display='none');
+
+document.getElementById(v).style.display='block';
+tipoActual = v;
+
+if(v === 'diario'){
+  paginaDiario = 1;
+}
+
+if(v === 'distribuidora'){
+  paginaDistribuidora = 1;
+}
+
+cargar();
+
+if(v==='logs'){
+cargarLogs();
+}
+
+}
+
+function abrir(tipo){
+
+tipoTicket=tipo;
+editId=null;
+
+titulo.value='';
+cliente.value='';
+marca.value='';
+fechaIngreso.value='';
+tecnico.value='';
+estado.value='Ingresado';
+descripcion.value='';
+prioridad.value='baja';
+
+$('#modal').modal({
+backdrop:false
+});
+
+$('#modal').modal('show');
+
+$('body').removeClass('modal-open');
+$('.modal-backdrop').remove();
+
+}
+
+function cerrarModal(){
+
+$('#modal').modal('hide');
+
+$('body').removeClass('modal-open');
+$('.modal-backdrop').remove();
+
+}
+
+function guardar(){
+
+const data={
+
+titulo:titulo.value,
+cliente:cliente.value,
+marca:marca.value,
+fechaIngreso:fechaIngreso.value,
+tecnico:tecnico.value,
+descripcion:descripcion.value,
+prioridad:prioridad.value,
+estado:estado.value,
+tipo:tipoTicket
+
+};
+
+console.log(data);
+
+let url='/api/tickets';
+let method='POST';
+
+if(editId){
+
+url='/api/tickets/'+editId;
+method='PUT';
+
+}
+
+alert(JSON.stringify(data));
+
+fetch(url,{
+method:method,
+headers:{
+'Content-Type':'application/json'
+},
+body:JSON.stringify(data)
+})
+.then(async r=>{
+
+const res=await r.json();
+
+console.log(res);
+
+if(!r.ok){
+
+alert(res.error);
+return;
+
+}
+
+$('#modal').modal('hide');
+
+$('body').removeClass('modal-open');
+$('.modal-backdrop').remove();
+
+cargar();
+
+})
+.catch(async err=>{
+
+console.log(err);
+
+alert('Error de conexión o validación');
+
+});
+
+}
+
+
+
+function cargar(){
+
+let pagina = tipoActual === 'distribuidora'
+? paginaDistribuidora
+: paginaDiario;
+
+fetch('/api/tickets?page=' + pagina + '&tipo=' + tipoActual)
+.then(r=>r.json())
+.then(data=>{
+
+listaDiario.innerHTML='';
+listaDistribuidora.innerHTML='';
+
+data.tickets.forEach(t=>{
+
+let row=`
+<tr onclick="verDetalle(${t.id})">
+
+<td>${t.numeroCaso}</td>
+<td>${t.titulo}</td>
+<td>${t.cliente}</td>
+<td>${t.estado || 'Ingresado'}</td>
+
+<td>
+<span class="prio-${t.prioridad}">
+${t.prioridad}
+</span>
+</td>
+
+<td>
+
+<button class="btn-modern btn-warn"
+onclick="event.stopPropagation(); editar(${t.id})">
+Editar
+</button>
+
+<button class="btn-modern btn-danger"
+onclick="event.stopPropagation(); borrar(${t.id})">
+Borrar
+</button>
+
+<button class="btn-modern btn-main"
+onclick="event.stopPropagation(); imprimirTicket(${t.id})">
+Imprimir
+</button>
+
+</td>
+
+</tr>`;
+
+if(t.tipo==='diario'){
+listaDiario.innerHTML+=row;
+}
+
+if(t.tipo==='distribuidora'){
+listaDistribuidora.innerHTML+=row;
+}
+
+});
+
+document.getElementById('total').innerText =
+data.totalTickets || data.tickets.length;
+
+document.getElementById('cDiario').innerText =
+data.totalDiario;
+
+document.getElementById('cDistribuidora').innerText =
+data.totalDistribuidora;
+
+});
+
+
+
+// HISTORIAL
+fetch('/api/tickets/historial')
+.then(r=>r.json())
+.then(data=>{
+
+listaHistorial.innerHTML='';
+
+data.forEach(t=>{
+
+listaHistorial.innerHTML+=`
+<tr>
+
+<td>${t.numeroCaso}</td>
+<td>${t.titulo}</td>
+
+<td>
+
+<button class="btn-modern btn-ok"
+onclick="restaurar(${t.id})">
+Restaurar
+</button>
+
+<button class="btn-modern btn-main"
+onclick="imprimirTicket(${t.id})">
+Imprimir
+</button>
+
+</td>
+
+</tr>`;
+
+});
+
+});
+
+
+// USERS
+fetch('/api/users')
+.then(r=>r.json())
+.then(data=>{
+
+console.log(data);
+
+listaUsuarios.innerHTML='';
+
+data.forEach(u=>{
+
+listaUsuarios.innerHTML+=`
+<tr>
+
+<td>
+<input value="${u.username}" id="u${u.id}">
+</td>
+
+<td>
+<input id="p${u.id}" placeholder="pass">
+</td>
+
+<td>
+
+<select id="r${u.id}">
+
+<option value="user" ${u.role=='user'?'selected':''}>
+user
+</option>
+
+<option value="admin" ${u.role=='admin'?'selected':''}>
+admin
+</option>
+
+</select>
+
+</td>
+
+<td>
+
+<button class="btn-modern btn-ok"
+onclick="guardarUser(${u.id})">
+Guardar
+</button>
+
+<button class="btn-modern btn-danger"
+onclick="borrarUser(${u.id})">
+Borrar
+</button>
+
+</td>
+
+</tr>`;
+
+});
+
+});
+
+}
+
+function cargarLogs(){
+
+let url='/api/logs?';
+
+if(fUser.value) url+='usuario='+fUser.value+'&';
+if(fAccion.value) url+='accion='+fAccion.value+'&';
+if(fDesde.value) url+='desde='+fDesde.value+'&';
+if(fHasta.value) url+='hasta='+fHasta.value+'&';
+
+fetch(url)
+.then(r=>r.json())
+.then(data=>{
+
+listaLogs.innerHTML='';
+
+data.forEach(l=>{
+
+let color=l.nivel=='ERROR'
+?'text-danger'
+:l.nivel=='WARN'
+?'text-warning'
+:'';
+
+listaLogs.innerHTML+=`
+<tr class="${color}">
+<td>${l.usuario}</td>
+<td>${l.accion}</td>
+<td>${l.detalle}</td>
+<td>${l.nivel}</td>
+<td>${new Date(l.fecha).toLocaleString()}</td>
+</tr>`;
+
+});
+
+});
+
+}
+
+function exportLogs(){
+window.open('/api/logs/export');
+}
+
+function editar(id){
+
+fetch('/api/tickets/'+id)
+.then(r=>r.json())
+.then(t=>{
+
+editId=id;
+tipoActual=t.tipo;
+
+titulo.value=t.titulo;
+cliente.value=t.cliente;
+marca.value=t.marca;
+fechaIngreso.value=t.fechaIngreso;
+tecnico.value=t.tecnico;
+descripcion.value=t.descripcion;
+estado.value = t.estado;
+prioridad.value=t.prioridad;
+
+$('#modal').modal('show');
+
+$('body').removeClass('modal-open');
+$('.modal-backdrop').remove();
+
+});
+
+}
+
+function verDetalle(id){
+
+fetch('/api/tickets/'+id)
+.then(r=>r.json())
+.then(t=>{
+
+dCaso.innerText=t.numeroCaso;
+dTitulo.innerText=t.titulo;
+dCliente.innerText=t.cliente;
+dMarca.innerText=t.marca;
+dFecha.innerText=t.fechaIngreso;
+dTecnico.innerText=t.tecnico;
+dPrioridad.innerText=t.prioridad;
+dEstado.innerText=t.estado;
+dDesc.innerText=t.descripcion;
+
+$('#detalleModal').modal('show');
+
+});
+
+}
+
+function imprimirTicket(id){
+
+fetch('/api/tickets/'+id)
+.then(r=>r.json())
+.then(t=>{
+
+let ventana=window.open('','_blank');
+
+ventana.document.write(`
+<html>
+
+<head>
+
+<title>Ticket ${t.numeroCaso}</title>
+
+<style>
+
+body{
+font-family:Arial;
+padding:30px;
+}
+
+h2{
+border-bottom:2px solid #000;
+padding-bottom:10px;
+}
+
+p{
+font-size:18px;
+margin:10px 0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>MUNDO ELECTRO</h2>
+
+<p><b>CASO:</b> ${t.numeroCaso}</p>
+<p><b>Producto:</b> ${t.titulo}</p>
+<p><b>Cliente:</b> ${t.cliente}</p>
+<p><b>Marca:</b> ${t.marca}</p>
+<p><b>Fecha:</b> ${t.fechaIngreso}</p>
+<p><b>Técnico:</b> ${t.tecnico}</p>
+<p><b>Prioridad:</b> ${t.prioridad}</p>
+<p><b>Estado:</b> ${t.estado}</p>
+<p><b>Descripción:</b> ${t.descripcion}</p>
+
+<script>
+window.print();
+<\/script>
+
+</body>
+</html>
+`);
+
+ventana.document.close();
+
+});
+
+}
+
+function borrar(id){
+
+fetch('/api/tickets/delete/'+id,{
+method:'PUT'
+})
+.then(()=>cargar());
+
+}
+
+function restaurar(id){
+
+fetch('/api/tickets/restore/'+id,{
+method:'PUT'
+})
+.then(()=>cargar());
+
+}
+
+function crearUsuario(){
+
+fetch('/api/users',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+username:newUser.value,
+password:newPass.value,
+role:newRole.value
+})
+})
+.then(()=>cargar());
+
+}
+
+function guardarUser(id){
+
+fetch('/api/users/'+id,{
+method:'PUT',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+username:document.getElementById('u'+id).value,
+password:document.getElementById('p'+id).value,
+role:document.getElementById('r'+id).value
+})
+})
+.then(()=>cargar());
+
+}
+
+function borrarUser(id){
+
+fetch('/api/users/'+id,{
+method:'DELETE'
+})
+.then(()=>cargar());
+
+}
+
+function siguientePagina(){
+
+  if(tipoActual === 'diario'){
+
+    paginaDiario++;
+
+  }else{
+
+    paginaDistribuidora++;
+
+  }
+
+  cargar();
+
+}
+
+function anteriorPagina(){
+
+  if(tipoActual === 'diario'){
+
+    if(paginaDiario > 1){
+
+      paginaDiario--;
+
+    }
+
+  }else{
+
+    if(paginaDistribuidora > 1){
+
+      paginaDistribuidora--;
+
+    }
+
+  }
+
+  cargar();
+
+}
+
+
+</script>
+</body>
+</html>
