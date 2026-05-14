@@ -481,6 +481,46 @@ app.get('/api/tickets/historial',auth,(req,res)=>{
 });
 
 
+// BUSCADOR GLOBAL
+app.get('/api/tickets/search', auth, (req, res) => {
+
+  const q = req.query.q;
+
+  if (!q) {
+    return res.json([]);
+  }
+
+  const sql = `
+    SELECT *
+    FROM tickets
+    WHERE eliminado=0
+    AND (
+      numeroCaso LIKE ?
+      OR titulo LIKE ?
+      OR cliente LIKE ?
+      OR marca LIKE ?
+      OR descripcion LIKE ?
+    )
+    ORDER BY id DESC
+    LIMIT 50
+  `;
+
+  const value = `%${q}%`;
+
+  db.all(sql, [value, value, value, value, value], (err, rows) => {
+
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Error en búsqueda' });
+    }
+
+    res.json(rows);
+
+  });
+
+});
+
+
 // 1 TICKET
 app.get('/api/tickets/:id',auth,(req,res)=>{
 
@@ -666,5 +706,44 @@ app.listen(PORT,()=>{
   console.log(
     "Servidor OK http://localhost:3000"
   );
+
+});
+
+// BUSCADOR GLOBAL
+app.get('/api/tickets/search', auth, (req, res) => {
+
+  const q = req.query.q;
+
+  if (!q) {
+    return res.json([]);
+  }
+
+  const sql = `
+    SELECT *
+    FROM tickets
+    WHERE eliminado=0
+    AND (
+      numeroCaso LIKE ?
+      OR titulo LIKE ?
+      OR cliente LIKE ?
+      OR marca LIKE ?
+      OR descripcion LIKE ?
+    )
+    ORDER BY id DESC
+    LIMIT 50
+  `;
+
+  const value = `%${q}%`;
+
+  db.all(sql, [value, value, value, value, value], (err, rows) => {
+
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: 'Error en búsqueda' });
+    }
+
+    res.json(rows);
+
+  });
 
 });

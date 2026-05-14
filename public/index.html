@@ -125,6 +125,14 @@ Logs
 Panel Principal
 </h3>
 
+<div class="mb-3">
+  <input id="buscadorGlobal"
+         class="form-control"
+         placeholder="Buscar tickets (caso, cliente, marca, etc)">
+</div>
+
+<div id="resultadosBusqueda"></div>
+
 <!-- PANEL -->
 <div id="panel">
 
@@ -962,6 +970,37 @@ function anteriorPagina(){
 
 }
 
+const buscador = document.getElementById("buscadorGlobal");
+const resultados = document.getElementById("resultadosBusqueda");
+
+let timeout = null;
+
+buscador.addEventListener("input", () => {
+
+  clearTimeout(timeout);
+
+  const q = buscador.value;
+
+  if (q.length === 0) {
+    resultados.innerHTML = "";
+    return;
+  }
+
+  timeout = setTimeout(async () => {
+
+    const res = await fetch('/api/tickets/search?q=' + q);
+    const data = await res.json();
+
+    resultados.innerHTML = data.map(t => `
+      <div class="card p-2 mb-2" onclick="verDetalle(${t.id})">
+        <b>${t.numeroCaso}</b> - ${t.titulo}<br>
+        <small>${t.cliente} | ${t.marca} | ${t.estado}</small>
+      </div>
+    `).join("");
+
+  }, 300);
+
+});
 
 </script>
 </body>
