@@ -459,23 +459,14 @@ estado.value='Ingresado';
 descripcion.value='';
 prioridad.value='baja';
 
-$('#modal').modal({
-backdrop:false
-});
 
 $('#modal').modal('show');
-
-$('body').removeClass('modal-open');
-$('.modal-backdrop').remove();
 
 }
 
 function cerrarModal(){
 
 $('#modal').modal('hide');
-
-$('body').removeClass('modal-open');
-$('.modal-backdrop').remove();
 
 }
 
@@ -531,8 +522,6 @@ return;
 
 $('#modal').modal('hide');
 
-$('body').removeClass('modal-open');
-$('.modal-backdrop').remove();
 
 cargar();
 
