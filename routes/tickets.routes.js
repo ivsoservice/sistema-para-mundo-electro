@@ -31,6 +31,12 @@ module.exports = (db, auth, logAction) => {
 
       const result = await service.crearTicket(ticketData);
 
+      logAction(
+  req.session.user.username,
+  'CREATE_TICKET',
+  result.id
+);
+
       res.json(result);
 
     } catch (err) {

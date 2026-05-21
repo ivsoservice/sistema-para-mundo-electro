@@ -100,8 +100,7 @@ function crearTicket(d) {
 
   return new Promise((resolve, reject) => {
 
-    const numeroCaso = Date.now();
-
+    const numeroCaso = null;
     const titulo = d.titulo || '';
     const cliente = d.cliente || '';
     const tipo = d.tipo || '';
@@ -131,12 +130,21 @@ function crearTicket(d) {
 
   if (err) return reject(err);
 
-  resolve({
-    ok: true,
-    id: this.lastID
-  });
+  db.run(
+  `UPDATE tickets SET numeroCaso=? WHERE id=?`,
+  ['CASO-' + String(this.lastID).padStart(4, '0'), this.lastID]
+);
+
+resolve({
+  ok: true,
+  id: this.lastID
+});
 
 });
+
+  });
+
+}
 
 function obtenerTicket(id) {
 

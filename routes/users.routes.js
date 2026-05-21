@@ -52,11 +52,13 @@ module.exports = (db, auth, logAction) => {
       return res.status(500).json({ error: 'Error creando usuario' });
     }
 
-    logAction(
-      req.session.user.username,
-      'CREATE_USER',
-      username
+    if(req.session.user){
+      logAction(
+          req.session.user.username,
+          'CREATE_USER',
+          username
     );
+}
 
     res.json({ ok: true });
 

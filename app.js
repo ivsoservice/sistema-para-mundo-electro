@@ -1,3 +1,4 @@
+const contactosRoutes = require('./routes/contactos.routes');
 const usersRoutes = require('./routes/users.routes');
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
@@ -73,15 +74,28 @@ app.use(
   '/api/users',
   usersRoutes(db, auth, logAction)
 );
+app.use(
+  '/api/contactos',
+  contactosRoutes(db, auth, logAction)
+);
 
 // AUTH
 function auth(req,res,next){
 
+  console.log("SESSION:");
+  console.log(req.session);
+
   if(!req.session.user){
+
+    console.log("NO HAY USER EN SESSION");
+
     return res.status(401).json({
       error:'No autorizado'
     });
+
   }
+
+  console.log("USER OK:", req.session.user.username);
 
   next();
 
@@ -143,6 +157,18 @@ db.serialize(()=>{
       fecha TEXT
     )
   `);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS contacts(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tipo TEXT,
+    nombre TEXT,
+    marca TEXT,
+    telefono TEXT,
+    direccion TEXT,
+    notas TEXT
+  )
+`);
 
   const hash = bcrypt.hashSync('1234',10);
 

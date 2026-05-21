@@ -114,6 +114,12 @@ Logs
 </a>
 </li>
 
+<li class="nav-item">
+<a onclick="vista('contactos')" class="nav-link">
+Contactos
+</a>
+</li>
+
 </ul>
 
 </div>
@@ -124,43 +130,55 @@ Logs
 <h3 id="tituloVista" class="mb-3">
 Panel Principal
 </h3>
+<div class="mb-2">
+  <b>Total:</b> <span id="total">0</span> |
+  <b>Diario:</b> <span id="cDiario">0</span> |
+  <b>Distribuidora:</b> <span id="cDistribuidora">0</span>
+</div>
 
 <div class="mb-3">
   <input id="buscadorGlobal"
          class="form-control"
          placeholder="Buscar tickets (caso, cliente, marca, etc)">
+<!-- CONTACTOS -->
+<div id="contactos" style="display:none;">
+
+<div class="mb-2">
+
+<select id="cTipo">
+<option value="urgencia">Urgencia</option>
+<option value="marca">Post Venta</option>
+<option value="tecnico">Técnico</option>
+<option value="service">Service</option>
+</select>
+
+<input id="cNombre" placeholder="Nombre">
+
+<input id="cMarca" placeholder="Marca">
+
+<input id="cTelefono" placeholder="Teléfono">
+
+<input id="cDireccion" placeholder="Dirección">
+
+<input id="cNotas" placeholder="Notas">
+
+<button onclick="crearContacto()"
+class="btn-modern btn-main">
+Guardar
+</button>
+
+</div>
+
+<table class="table">
+<tbody id="listaContactos"></tbody>
+</table>
+
+</div>
+
 </div>
 
 <div id="resultadosBusqueda"></div>
 
-<!-- PANEL -->
-<div id="panel">
-
-<div class="row">
-
-<div class="col-md-4">
-<div class="card-box bg-main">
-<h3 id="total">0</h3>
-Total
-</div>
-</div>
-
-<div class="col-md-4">
-<div class="card-box bg-ok">
-<h3 id="cDiario">0</h3>
-Pago Diario
-</div>
-</div>
-
-<div class="col-md-4">
-<div class="card-box bg-warn">
-<h3 id="cDistribuidora">0</h3>
-Distribuidora
-</div>
-</div>
-
-</div>
-</div>
 
 <!-- DIARIO -->
 <div id="diario" style="display:none;">
@@ -244,6 +262,8 @@ Crear
 </table>
 
 </div>
+
+
 
 <!-- LOGS -->
 <div id="logs" style="display:none;">
@@ -367,12 +387,53 @@ Guardar
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+window.onerror = function(msg){
+  console.log("ERROR CAPTURADO:", msg);
+  return false;
+};
+</script>
+
+<script>
+
+// MI SISTEMA GRANDE EMPIEZA ACÁ
 
 let tipoActual='diario';
 let tipoTicket='diario';
 let editId=null;
 let paginaDiario = 1;
 let paginaDistribuidora = 1;
+
+function login(){
+
+const u = document.getElementById('user').value;
+const p = document.getElementById('pass').value;
+
+fetch('/api/login',{
+  credentials: 'include',
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({
+    username:u,
+    password:p
+  })
+})
+.then(r => {
+
+  if(!r.ok){
+    document.getElementById('err').innerText =
+      "Usuario o contraseña incorrecta";
+    return;
+  }
+
+  document.getElementById('loginBox').style.display='none';
+  document.getElementById('app').style.display='block';
+
+  cargar();
+  setInterval(cargar,3000);
+
+});
+
+}
 
 document.addEventListener("keydown",function(e){
 
@@ -382,67 +443,70 @@ login();
 
 });
 
-function login(){
-
-fetch('/api/login',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-username:user.value,
-password:pass.value
-})
-})
-.then(r=>{
-
-if(!r.ok){
-err.innerText="Usuario o contraseña incorrecta";
-return;
-}
-
-loginBox.style.display='none';
-app.style.display='block';
-
-cargar();
-
-setInterval(cargar,3000);
-
-});
-
-}
 
 function vista(v){
 
-const titulos={
+const titulos = {
 panel:'Panel Principal',
 diario:'Pago Diario',
 distribuidora:'Distribuidora',
 historial:'Historial',
 usuarios:'Usuarios',
-logs:'Logs'
+logs:'Logs',
+contactos:'Contactos'
 };
 
-tituloVista.innerText=titulos[v];
+document.getElementById('tituloVista').innerText = titulos[v];
 
-['panel','diario','distribuidora','historial','usuarios','logs']
-.forEach(x=>document.getElementById(x).style.display='none');
+const vistas = [
+'panel',
+'diario',
+'distribuidora',
+'historial',
+'usuarios',
+'logs',
+'contactos'
+];
+
+vistas.forEach(id => {
+
+const el = document.getElementById(id);
+
+if(el){
+el.style.display='none';
+}
+
+});
 
 document.getElementById(v).style.display='block';
+
 tipoActual = v;
 
 if(v === 'diario'){
-  paginaDiario = 1;
+paginaDiario = 1;
 }
 
 if(v === 'distribuidora'){
-  paginaDistribuidora = 1;
+paginaDistribuidora = 1;
 }
 
 cargar();
 
-if(v==='logs'){
-cargarLogs();
+if(v === 'logs'){
+  cargarLogs();
 }
 
+if(v === 'contactos'){
+  cargarContactos();
+}
+
+if(v === 'historial'){
+  cargarHistorial();
+}
+
+if(v === 'usuarios'){
+  cargarUsers();
+}
 }
 
 function abrir(tipo){
@@ -459,21 +523,17 @@ estado.value='Ingresado';
 descripcion.value='';
 prioridad.value='baja';
 
-
 $('#modal').modal('show');
 
 }
 
 function cerrarModal(){
-
 $('#modal').modal('hide');
-
 }
 
 function guardar(){
 
 const data={
-
 titulo:titulo.value,
 cliente:cliente.value,
 marca:marca.value,
@@ -483,52 +543,38 @@ descripcion:descripcion.value,
 prioridad:prioridad.value,
 estado:estado.value,
 tipo:tipoTicket
-
 };
-
-console.log(data);
 
 let url='/api/tickets';
 let method='POST';
 
 if(editId){
-
 url='/api/tickets/'+editId;
 method='PUT';
-
 }
 
-alert(JSON.stringify(data));
-
 fetch(url,{
-method:method,
-headers:{
-'Content-Type':'application/json'
-},
-body:JSON.stringify(data)
+  credentials: 'include',
+  method:method,
+  headers:{
+    'Content-Type':'application/json'
+  },
+  body:JSON.stringify(data)
 })
 .then(async r=>{
 
 const res=await r.json();
 
-console.log(res);
-
 if(!r.ok){
-
 alert(res.error);
 return;
-
 }
 
 $('#modal').modal('hide');
-
-
 cargar();
 
 })
-.catch(async err=>{
-
-console.log(err);
+.catch(()=>{
 
 alert('Error de conexión o validación');
 
@@ -536,24 +582,26 @@ alert('Error de conexión o validación');
 
 }
 
-
-
 function cargar(){
 
 let pagina = tipoActual === 'distribuidora'
-? paginaDistribuidora
-: paginaDiario;
+  ? paginaDistribuidora
+  : paginaDiario;
 
-fetch('/api/tickets?page=' + pagina + '&tipo=' + tipoActual)
-.then(r=>r.json())
-.then(data=>{
+fetch('/api/tickets?page=' + pagina + '&tipo=' + tipoActual,{
+  credentials: 'include'
+})
+.then(r => r.json())
+.then(data => {
 
-listaDiario.innerHTML='';
-listaDistribuidora.innerHTML='';
+if (!data || !data.tickets) return;
 
-data.tickets.forEach(t=>{
+listaDiario.innerHTML = '';
+listaDistribuidora.innerHTML = '';
 
-let row=`
+data.tickets.forEach(t => {
+
+let row = `
 <tr onclick="verDetalle(${t.id})">
 
 <td>${t.numeroCaso}</td>
@@ -568,7 +616,6 @@ ${t.prioridad}
 </td>
 
 <td>
-
 <button class="btn-modern btn-warn"
 onclick="event.stopPropagation(); editar(${t.id})">
 Editar
@@ -583,125 +630,177 @@ Borrar
 onclick="event.stopPropagation(); imprimirTicket(${t.id})">
 Imprimir
 </button>
-
 </td>
 
 </tr>`;
 
-if(t.tipo==='diario'){
-listaDiario.innerHTML+=row;
+if (t.tipo === 'diario') listaDiario.innerHTML += row;
+if (t.tipo === 'distribuidora') listaDistribuidora.innerHTML += row;
+
+});
+
+// 🔥 FIX IMPORTANTE
+const total = document.getElementById('total');
+const cDiario = document.getElementById('cDiario');
+const cDistribuidora = document.getElementById('cDistribuidora');
+
+if (total) total.innerText = data.totalTickets || data.tickets.length;
+if (cDiario) cDiario.innerText = data.totalDiario || 0;
+if (cDistribuidora) cDistribuidora.innerText = data.totalDistribuidora || 0;
+
+});
+
 }
 
-if(t.tipo==='distribuidora'){
-listaDistribuidora.innerHTML+=row;
+
+function cargarContactos(){
+
+fetch('/api/contactos',{
+  credentials:'include'
+})
+.then(r => r.json())
+.then(data => {
+
+  if (!Array.isArray(data)) return;
+
+  const lista = document.getElementById('listaContactos');
+
+  if(!lista) return;
+
+  lista.innerHTML = '';
+
+  data.forEach(c => {
+
+    lista.innerHTML += `
+    <tr>
+      <td>${c.tipo}</td>
+      <td>${c.nombre}</td>
+      <td>${c.marca || '-'}</td>
+      <td>${c.telefono}</td>
+      <td>${c.direccion || '-'}</td>
+      <td>${c.notas || '-'}</td>
+
+      <td>
+        <button
+        class="btn-modern btn-danger"
+        onclick="borrarContacto(${c.id})">
+        Borrar
+        </button>
+      </td>
+
+    </tr>
+    `;
+
+  });
+
+});
+
 }
 
-});
+function cargarHistorial(){
 
-document.getElementById('total').innerText =
-data.totalTickets || data.tickets.length;
+fetch('/api/tickets/historial',{
+  credentials:'include'
+})
+.then(r => r.json())
+.then(data => {
 
-document.getElementById('cDiario').innerText =
-data.totalDiario;
+  if (!Array.isArray(data)) return;
 
-document.getElementById('cDistribuidora').innerText =
-data.totalDistribuidora;
+  listaHistorial.innerHTML='';
 
-});
+  data.forEach(t => {
 
+    listaHistorial.innerHTML += `
+    <tr>
 
+      <td>${t.numeroCaso}</td>
+      <td>${t.titulo}</td>
 
-// HISTORIAL
-fetch('/api/tickets/historial')
-.then(r=>r.json())
-.then(data=>{
+      <td>
 
-listaHistorial.innerHTML='';
+        <button class="btn-modern btn-ok"
+        onclick="restaurar(${t.id})">
+        Restaurar
+        </button>
 
-data.forEach(t=>{
+        <button class="btn-modern btn-main"
+        onclick="imprimirTicket(${t.id})">
+        Imprimir
+        </button>
 
-listaHistorial.innerHTML+=`
-<tr>
+      </td>
 
-<td>${t.numeroCaso}</td>
-<td>${t.titulo}</td>
+    </tr>
+    `;
 
-<td>
-
-<button class="btn-modern btn-ok"
-onclick="restaurar(${t.id})">
-Restaurar
-</button>
-
-<button class="btn-modern btn-main"
-onclick="imprimirTicket(${t.id})">
-Imprimir
-</button>
-
-</td>
-
-</tr>`;
+  });
 
 });
 
-});
+}
 
+function cargarUsers(){
 
-// USERS
-fetch('/api/users')
-.then(r=>r.json())
-.then(data=>{
+fetch('/api/users',{
+  credentials:'include'
+})
+.then(r => r.json())
+.then(data => {
 
-console.log(data);
+  if (!Array.isArray(data)) return;
 
-listaUsuarios.innerHTML='';
+  listaUsuarios.innerHTML = '';
 
-data.forEach(u=>{
+  data.forEach(u => {
 
-listaUsuarios.innerHTML+=`
-<tr>
+    listaUsuarios.innerHTML += `
+    <tr>
 
-<td>
-<input value="${u.username}" id="u${u.id}">
-</td>
+      <td>
+        <input value="${u.username}" id="u${u.id}">
+      </td>
 
-<td>
-<input id="p${u.id}" placeholder="pass">
-</td>
+      <td>
+        <input id="p${u.id}" placeholder="pass">
+      </td>
 
-<td>
+      <td>
 
-<select id="r${u.id}">
+        <select id="r${u.id}">
 
-<option value="user" ${u.role=='user'?'selected':''}>
-user
-</option>
+          <option value="user"
+          ${u.role=='user' ? 'selected' : ''}>
+          user
+          </option>
 
-<option value="admin" ${u.role=='admin'?'selected':''}>
-admin
-</option>
+          <option value="admin"
+          ${u.role=='admin' ? 'selected' : ''}>
+          admin
+          </option>
 
-</select>
+        </select>
 
-</td>
+      </td>
 
-<td>
+      <td>
 
-<button class="btn-modern btn-ok"
-onclick="guardarUser(${u.id})">
-Guardar
-</button>
+        <button class="btn-modern btn-ok"
+        onclick="guardarUser(${u.id})">
+        Guardar
+        </button>
 
-<button class="btn-modern btn-danger"
-onclick="borrarUser(${u.id})">
-Borrar
-</button>
+        <button class="btn-modern btn-danger"
+        onclick="borrarUser(${u.id})">
+        Borrar
+        </button>
 
-</td>
+      </td>
 
-</tr>`;
+    </tr>
+    `;
 
-});
+  });
 
 });
 
@@ -716,7 +815,9 @@ if(fAccion.value) url+='accion='+fAccion.value+'&';
 if(fDesde.value) url+='desde='+fDesde.value+'&';
 if(fHasta.value) url+='hasta='+fHasta.value+'&';
 
-fetch(url)
+fetch(url, {
+  credentials: 'include'
+})
 .then(r=>r.json())
 .then(data=>{
 
@@ -746,17 +847,19 @@ listaLogs.innerHTML+=`
 }
 
 function exportLogs(){
-window.open('/api/logs/export');
+window.location.href='/api/logs/export';
 }
 
 function editar(id){
 
-fetch('/api/tickets/'+id)
+fetch('/api/tickets/'+id, {
+  credentials: 'include'
+})
 .then(r=>r.json())
 .then(t=>{
 
 editId=id;
-tipoActual=t.tipo;
+tipoTicket=t.tipo;
 
 titulo.value=t.titulo;
 cliente.value=t.cliente;
@@ -769,8 +872,6 @@ prioridad.value=t.prioridad;
 
 $('#modal').modal('show');
 
-$('body').removeClass('modal-open');
-$('.modal-backdrop').remove();
 
 });
 
@@ -778,7 +879,9 @@ $('.modal-backdrop').remove();
 
 function verDetalle(id){
 
-fetch('/api/tickets/'+id)
+fetch('/api/tickets/'+id, {
+  credentials: 'include'
+})
 .then(r=>r.json())
 .then(t=>{
 
@@ -800,17 +903,17 @@ $('#detalleModal').modal('show');
 
 function imprimirTicket(id){
 
-fetch('/api/tickets/'+id)
-.then(r=>r.json())
-.then(t=>{
+fetch('/api/tickets/' + id, {
+  credentials: 'include'
+})
+.then(r => r.json())
+.then(t => {
 
-let ventana=window.open('','_blank');
+let ventana = window.open('', '_blank');
 
-ventana.document.write(`
+let html = `
 <html>
-
 <head>
-
 <title>Ticket ${t.numeroCaso}</title>
 
 <style>
@@ -848,15 +951,19 @@ margin:10px 0;
 <p><b>Estado:</b> ${t.estado}</p>
 <p><b>Descripción:</b> ${t.descripcion}</p>
 
-<script>
-window.print();
-<\/script>
-
 </body>
 </html>
-`);
+`;
+
+ventana.document.write(html);
 
 ventana.document.close();
+
+ventana.onload = function(){
+
+ventana.print();
+
+};
 
 });
 
@@ -865,7 +972,8 @@ ventana.document.close();
 function borrar(id){
 
 fetch('/api/tickets/delete/'+id,{
-method:'PUT'
+  credentials: 'include',
+  method:'PUT'
 })
 .then(()=>cargar());
 
@@ -874,22 +982,42 @@ method:'PUT'
 function restaurar(id){
 
 fetch('/api/tickets/restore/'+id,{
-method:'PUT'
+  credentials:'include',
+  method:'PUT'
 })
-.then(()=>cargar());
+.then(async r => {
+
+  if(!r.ok){
+    const err = await r.text();
+    console.log(err);
+    alert("Error al restaurar");
+    return;
+  }
+
+  cargarHistorial();
+  cargar();
+
+})
+.catch(err => {
+  console.log(err);
+  alert("Error de conexión");
+});
 
 }
 
 function crearUsuario(){
 
 fetch('/api/users',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-username:newUser.value,
-password:newPass.value,
-role:newRole.value
-})
+  credentials: 'include',
+  method:'POST',
+  headers:{
+    'Content-Type':'application/json'
+  },
+  body:JSON.stringify({
+    username:newUser.value,
+    password:newPass.value,
+    role:newRole.value
+  })
 })
 .then(()=>cargar());
 
@@ -898,13 +1026,16 @@ role:newRole.value
 function guardarUser(id){
 
 fetch('/api/users/'+id,{
-method:'PUT',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-username:document.getElementById('u'+id).value,
-password:document.getElementById('p'+id).value,
-role:document.getElementById('r'+id).value
-})
+  credentials: 'include',
+  method:'PUT',
+  headers:{
+    'Content-Type':'application/json'
+  },
+  body:JSON.stringify({
+    username:document.getElementById('u'+id).value,
+    password:document.getElementById('p'+id).value,
+    role:document.getElementById('r'+id).value
+  })
 })
 .then(()=>cargar());
 
@@ -913,9 +1044,55 @@ role:document.getElementById('r'+id).value
 function borrarUser(id){
 
 fetch('/api/users/'+id,{
-method:'DELETE'
+  credentials: 'include',
+  method:'DELETE'
 })
 .then(()=>cargar());
+
+}
+
+function crearContacto(){
+
+fetch('/api/contactos',{
+  credentials: 'include',
+  method:'POST',
+headers:{
+'Content-Type':'application/json'
+},
+body:JSON.stringify({
+tipo:cTipo.value,
+nombre:cNombre.value,
+marca:cMarca.value,
+telefono:cTelefono.value,
+direccion:cDireccion.value,
+notas:cNotas.value
+})
+})
+.then(()=>{
+  cargarContactos();
+  cargar();
+
+cNombre.value='';
+cMarca.value='';
+cTelefono.value='';
+cDireccion.value='';
+cNotas.value='';
+
+});
+
+}
+
+function borrarContacto(id){
+
+fetch('/api/contactos/'+id,{
+  credentials:'include',
+  method:'DELETE'
+})
+.then(()=>{
+  cargarContactos();
+  cargar();
+})
+.catch(err => console.log(err));
 
 }
 
@@ -964,28 +1141,59 @@ const resultados = document.getElementById("resultadosBusqueda");
 
 let timeout = null;
 
-buscador.addEventListener("input", () => {
+buscador.addEventListener('input', () => {
 
   clearTimeout(timeout);
 
   const q = buscador.value;
 
-  if (q.length === 0) {
-    resultados.innerHTML = "";
+  if(q.length === 0){
+
+    resultados.innerHTML = '';
     return;
+
   }
 
   timeout = setTimeout(async () => {
 
-    const res = await fetch('/api/tickets/search?q=' + q);
-    const data = await res.json();
+    try{
 
-    resultados.innerHTML = data.map(t => `
-      <div class="card p-2 mb-2" onclick="verDetalle(${t.id})">
-        <b>${t.numeroCaso}</b> - ${t.titulo}<br>
-        <small>${t.cliente} | ${t.marca} | ${t.estado}</small>
-      </div>
-    `).join("");
+      const res = await fetch(
+        '/api/tickets/search?q=' + encodeURIComponent(q),
+        {
+          credentials: 'include'
+        }
+      );
+
+            const data = await res.json();
+
+      resultados.innerHTML = data.map(t => {
+
+        return `
+        <div class="card p-2 mb-2"
+        onclick="verDetalle(${t.id})">
+
+          <b>${t.numeroCaso}</b>
+          - ${t.titulo}<br>
+
+          <small>
+            ${t.cliente}
+            |
+            ${t.marca}
+            |
+            ${t.estado}
+          </small>
+
+        </div>
+        `;
+
+      }).join('');
+
+    } catch(err){
+
+      console.log(err);
+
+    }
 
   }, 300);
 
