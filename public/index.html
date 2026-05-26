@@ -102,19 +102,19 @@ Historial
 </a>
 </li>
 
-<li class="nav-item">
+<li class="nav-item" id="menuUsuarios">
 <a onclick="vista('usuarios')" class="nav-link">
 Usuarios
 </a>
 </li>
 
-<li class="nav-item">
+<li class="nav-item" id="menuLogs">
 <a onclick="vista('logs')" class="nav-link">
 Logs
 </a>
 </li>
 
-<li class="nav-item">
+<li class="nav-item" id="menuContactos">
 <a onclick="vista('contactos')" class="nav-link">
 Contactos
 </a>
@@ -137,19 +137,25 @@ Panel Principal
 </div>
 
 <div class="mb-3">
+
   <input id="buscadorGlobal"
          class="form-control"
          placeholder="Buscar tickets (caso, cliente, marca, etc)">
+
+</div>
+
+<div id="resultadosBusqueda"></div>
+
 <!-- CONTACTOS -->
 <div id="contactos" style="display:none;">
 
 <div class="mb-2">
 
 <select id="cTipo">
-<option value="urgencia">Urgencia</option>
-<option value="marca">Post Venta</option>
-<option value="tecnico">Técnico</option>
-<option value="service">Service</option>
+  <option value="" disabled selected>Elegí tipo</option>
+  <option value="post venta">Post venta</option>
+  <option value="tecnico">Técnico</option>
+  <option value="consulta">Consulta</option>
 </select>
 
 <input id="cNombre" placeholder="Nombre">
@@ -171,9 +177,8 @@ Guardar
 
 <table class="table">
 <tbody id="listaContactos"></tbody>
-</table>
 
-</div>
+</table>
 
 </div>
 
@@ -305,7 +310,6 @@ Exportar CSV
 </div>
 
 </div>
-</div>
 
 <!-- MODAL -->
 <div class="modal fade" id="modal">
@@ -377,6 +381,21 @@ Guardar
 <p><b>Prioridad:</b> <span id="dPrioridad"></span></p>
 <p><b>Estado:</b> <span id="dEstado"></span></p>
 <p><b>Descripción:</b> <span id="dDesc"></span></p>
+<div class="mt-3">
+
+<button id="btnEditarDetalle"
+onclick="editarDesdeDetalle()"
+class="btn-modern btn-warn">
+Editar
+</button>
+
+<button id="btnImprimirDetalle"
+onclick="imprimirTicket(ticketDetalleId)"
+class="btn-modern btn-main">
+Imprimir
+</button>
+
+</div>
 
 </div>
 </div>
@@ -395,6 +414,35 @@ window.onerror = function(msg){
 
 <script>
 
+window.logoutAuto = function () {
+
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginBox').style.display = 'block';
+
+  alert('Sesión expirada. Volvé a iniciar sesión.');
+};
+
+function fetchAuth(url, options = {}){
+
+  options.credentials = 'include';
+
+  return fetch(url, options)
+  .then(r => {
+
+    if(r.status === 401){
+
+      logoutAuto();
+
+      return Promise.reject("No autorizado");
+
+    }
+
+    return r;
+
+  });
+
+}
+
 // MI SISTEMA GRANDE EMPIEZA ACÁ
 
 let tipoActual='diario';
@@ -402,36 +450,74 @@ let tipoTicket='diario';
 let editId=null;
 let paginaDiario = 1;
 let paginaDistribuidora = 1;
+let autoRefresh = null;
+let ticketDetalleId = null;
 
 function login(){
 
-const u = document.getElementById('user').value;
-const p = document.getElementById('pass').value;
+  const u = document.getElementById('user').value;
+  const p = document.getElementById('pass').value;
 
-fetch('/api/login',{
-  credentials: 'include',
-  method:'POST',
-  headers:{'Content-Type':'application/json'},
-  body:JSON.stringify({
-    username:u,
-    password:p
+  fetch('/api/login',{
+    credentials: 'include',
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      username:u,
+      password:p
+    })
   })
-})
-.then(r => {
+  .then(async r => {
 
-  if(!r.ok){
-    document.getElementById('err').innerText =
-      "Usuario o contraseña incorrecta";
-    return;
-  }
+    const data = await r.json();
 
-  document.getElementById('loginBox').style.display='none';
-  document.getElementById('app').style.display='block';
+    console.log(data);
 
-  cargar();
-  setInterval(cargar,3000);
+    // ❌ si falla login
+    if(!r.ok){
+      document.getElementById('err').innerText =
+        "Usuario o contraseña incorrecta";
+      return;
+    }
 
-});
+    // ✔ guardar rol
+    window.userRole = data.role;
+
+    // ✔ mostrar app
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+
+// ✔ permisos UI
+if(window.userRole !== 'admin'){
+
+  document.getElementById('menuUsuarios').style.display = 'none';
+  document.getElementById('menuLogs').style.display = 'none';
+  document.getElementById('menuContactos').style.display = 'none';
+
+}else{
+
+  document.getElementById('menuUsuarios').style.display = 'block';
+  document.getElementById('menuLogs').style.display = 'block';
+  document.getElementById('menuContactos').style.display = 'block';
+
+}
+
+    // ✔ cargar sistema
+    cargar();
+
+    // auto refresh
+    autoRefresh = setInterval(() => {
+
+      if(
+        tipoActual === 'diario' ||
+        tipoActual === 'distribuidora'
+      ){
+        cargar();
+      }
+
+    }, 3000);
+
+  });
 
 }
 
@@ -446,68 +532,52 @@ login();
 
 function vista(v){
 
-const titulos = {
-panel:'Panel Principal',
-diario:'Pago Diario',
-distribuidora:'Distribuidora',
-historial:'Historial',
-usuarios:'Usuarios',
-logs:'Logs',
-contactos:'Contactos'
-};
+  const titulos = {
+    panel:'Panel Principal',
+    diario:'Pago Diario',
+    distribuidora:'Distribuidora',
+    historial:'Historial',
+    usuarios:'Usuarios',
+    logs:'Logs',
+    contactos:'Contactos'
+  };
 
-document.getElementById('tituloVista').innerText = titulos[v];
+  document.getElementById('tituloVista').innerText = titulos[v];
 
-const vistas = [
-'panel',
-'diario',
-'distribuidora',
-'historial',
-'usuarios',
-'logs',
-'contactos'
-];
+  const vistas = [
+    'panel',
+    'diario',
+    'distribuidora',
+    'historial',
+    'usuarios',
+    'logs',
+    'contactos'
+  ];
 
-vistas.forEach(id => {
+  vistas.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
 
-const el = document.getElementById(id);
+  const actual = document.getElementById(v.toLowerCase());
+  if(actual) actual.style.display = 'block';
 
-if(el){
-el.style.display='none';
+  tipoActual = v;
+
+  if(v === 'diario') paginaDiario = 1;
+  if(v === 'distribuidora') paginaDistribuidora = 1;
+
+  cargar();
+
+  if(v === 'logs') cargarLogs();
+  if(v === 'contactos') cargarContactos();
+  if(v === 'historial') cargarHistorial();
+  if(v === 'usuarios') cargarUsers();
+
+  if(v === 'diario') paginaDiario = 1;
+  if(v === 'distribuidora') paginaDistribuidora = 1;
 }
 
-});
-
-document.getElementById(v).style.display='block';
-
-tipoActual = v;
-
-if(v === 'diario'){
-paginaDiario = 1;
-}
-
-if(v === 'distribuidora'){
-paginaDistribuidora = 1;
-}
-
-cargar();
-
-if(v === 'logs'){
-  cargarLogs();
-}
-
-if(v === 'contactos'){
-  cargarContactos();
-}
-
-if(v === 'historial'){
-  cargarHistorial();
-}
-
-if(v === 'usuarios'){
-  cargarUsers();
-}
-}
 
 function abrir(tipo){
 
@@ -591,8 +661,19 @@ let pagina = tipoActual === 'distribuidora'
 fetch('/api/tickets?page=' + pagina + '&tipo=' + tipoActual,{
   credentials: 'include'
 })
-.then(r => r.json())
+.then(r => {
+
+if(r.status === 401){
+  logoutAuto();
+  return;
+}
+
+return r.json();
+
+})
 .then(data => {
+
+if(!data) return;
 
 if (!data || !data.tickets) return;
 
@@ -639,6 +720,15 @@ if (t.tipo === 'distribuidora') listaDistribuidora.innerHTML += row;
 
 });
 
+function logoutAuto(){
+
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginBox').style.display = 'block';
+
+  alert('Sesión expirada. Volvé a iniciar sesión.');
+
+}
+
 // 🔥 FIX IMPORTANTE
 const total = document.getElementById('total');
 const cDiario = document.getElementById('cDiario');
@@ -655,45 +745,68 @@ if (cDistribuidora) cDistribuidora.innerText = data.totalDistribuidora || 0;
 
 function cargarContactos(){
 
-fetch('/api/contactos',{
-  credentials:'include'
-})
-.then(r => r.json())
-.then(data => {
+  fetchAuth('/api/contactos')
+  .then(r => r.json())
+  .then(data => {
 
-  if (!Array.isArray(data)) return;
+    console.log("CONTACTOS:", data);
 
-  const lista = document.getElementById('listaContactos');
+    if (!Array.isArray(data)) return;
 
-  if(!lista) return;
+    const lista = document.getElementById('listaContactos');
 
-  lista.innerHTML = '';
+    if(!lista) return;
 
-  data.forEach(c => {
+    lista.innerHTML = '';
 
-    lista.innerHTML += `
-    <tr>
-      <td>${c.tipo}</td>
-      <td>${c.nombre}</td>
-      <td>${c.marca || '-'}</td>
-      <td>${c.telefono}</td>
-      <td>${c.direccion || '-'}</td>
-      <td>${c.notas || '-'}</td>
+    data.forEach(c => {
 
-      <td>
-        <button
-        class="btn-modern btn-danger"
-        onclick="borrarContacto(${c.id})">
-        Borrar
-        </button>
-      </td>
+      lista.innerHTML += `
+      <tr>
 
-    </tr>
-    `;
+        <td>
+          <span class="badge badge-primary">
+            ${c.tipo || '-'}
+          </span>
+        </td>
 
+        <td>
+          <b>${c.nombre || '-'}</b>
+        </td>
+
+        <td>
+          ${c.marca || '-'}
+        </td>
+
+        <td>
+          📞 ${c.telefono || '-'}
+        </td>
+
+        <td>
+          ${c.direccion || '-'}
+        </td>
+
+        <td style="max-width:220px;">
+          ${c.notas || '-'}
+        </td>
+
+        <td>
+          <button
+          class="btn-modern btn-danger"
+          onclick="borrarContacto(${c.id})">
+          Borrar
+          </button>
+        </td>
+
+      </tr>
+      `;
+
+    });
+
+  })
+  .catch(err => {
+    console.log(err);
   });
-
-});
 
 }
 
@@ -742,13 +855,11 @@ fetch('/api/tickets/historial',{
 
 function cargarUsers(){
 
-fetch('/api/users',{
-  credentials:'include'
-})
+fetchAuth('/api/users')
 .then(r => r.json())
 .then(data => {
 
-  if (!Array.isArray(data)) return;
+  if(!Array.isArray(data)) return;
 
   listaUsuarios.innerHTML = '';
 
@@ -756,55 +867,28 @@ fetch('/api/users',{
 
     listaUsuarios.innerHTML += `
     <tr>
+      <td><input value="${u.username}" id="u${u.id}"></td>
+      <td><input id="p${u.id}" placeholder="pass"></td>
 
       <td>
-        <input value="${u.username}" id="u${u.id}">
-      </td>
-
-      <td>
-        <input id="p${u.id}" placeholder="pass">
-      </td>
-
-      <td>
-
         <select id="r${u.id}">
-
-          <option value="user"
-          ${u.role=='user' ? 'selected' : ''}>
-          user
-          </option>
-
-          <option value="admin"
-          ${u.role=='admin' ? 'selected' : ''}>
-          admin
-          </option>
-
+          <option value="user" ${u.role=='user' ? 'selected' : ''}>user</option>
+          <option value="admin" ${u.role=='admin' ? 'selected' : ''}>admin</option>
         </select>
-
       </td>
 
       <td>
-
-        <button class="btn-modern btn-ok"
-        onclick="guardarUser(${u.id})">
-        Guardar
-        </button>
-
-        <button class="btn-modern btn-danger"
-        onclick="borrarUser(${u.id})">
-        Borrar
-        </button>
-
+        <button onclick="guardarUser(${u.id})">Guardar</button>
+        <button onclick="borrarUser(${u.id})">Borrar</button>
       </td>
-
     </tr>
     `;
-
   });
 
 });
 
 }
+
 
 function cargarLogs(){
 
@@ -815,32 +899,27 @@ if(fAccion.value) url+='accion='+fAccion.value+'&';
 if(fDesde.value) url+='desde='+fDesde.value+'&';
 if(fHasta.value) url+='hasta='+fHasta.value+'&';
 
-fetch(url, {
-  credentials: 'include'
-})
-.then(r=>r.json())
-.then(data=>{
+fetchAuth(url)
+.then(r => r.json())
+.then(data => {
 
-listaLogs.innerHTML='';
+  listaLogs.innerHTML = '';
 
-data.forEach(l=>{
+  data.forEach(l => {
 
-let color=l.nivel=='ERROR'
-?'text-danger'
-:l.nivel=='WARN'
-?'text-warning'
-:'';
+    let color =
+      l.nivel == 'ERROR' ? 'text-danger' :
+      l.nivel == 'WARN' ? 'text-warning' : '';
 
-listaLogs.innerHTML+=`
-<tr class="${color}">
-<td>${l.usuario}</td>
-<td>${l.accion}</td>
-<td>${l.detalle}</td>
-<td>${l.nivel}</td>
-<td>${new Date(l.fecha).toLocaleString()}</td>
-</tr>`;
-
-});
+    listaLogs.innerHTML += `
+    <tr class="${color}">
+      <td>${l.usuario}</td>
+      <td>${l.accion}</td>
+      <td>${l.detalle}</td>
+      <td>${l.nivel}</td>
+      <td>${new Date(l.fecha).toLocaleString()}</td>
+    </tr>`;
+  });
 
 });
 
@@ -852,26 +931,23 @@ window.location.href='/api/logs/export';
 
 function editar(id){
 
-fetch('/api/tickets/'+id, {
-  credentials: 'include'
-})
-.then(r=>r.json())
-.then(t=>{
+fetchAuth('/api/tickets/' + id)
+.then(r => r.json())
+.then(t => {
 
-editId=id;
-tipoTicket=t.tipo;
+  editId = id;
+  tipoTicket = t.tipo;
 
-titulo.value=t.titulo;
-cliente.value=t.cliente;
-marca.value=t.marca;
-fechaIngreso.value=t.fechaIngreso;
-tecnico.value=t.tecnico;
-descripcion.value=t.descripcion;
-estado.value = t.estado;
-prioridad.value=t.prioridad;
+  titulo.value = t.titulo;
+  cliente.value = t.cliente;
+  marca.value = t.marca;
+  fechaIngreso.value = t.fechaIngreso;
+  tecnico.value = t.tecnico;
+  descripcion.value = t.descripcion;
+  estado.value = t.estado;
+  prioridad.value = t.prioridad;
 
-$('#modal').modal('show');
-
+  $('#modal').modal('show');
 
 });
 
@@ -879,91 +955,96 @@ $('#modal').modal('show');
 
 function verDetalle(id){
 
-fetch('/api/tickets/'+id, {
-  credentials: 'include'
-})
-.then(r=>r.json())
-.then(t=>{
+fetchAuth('/api/tickets/' + id)
+.then(r => r.json())
+.then(t => {
 
-dCaso.innerText=t.numeroCaso;
-dTitulo.innerText=t.titulo;
-dCliente.innerText=t.cliente;
-dMarca.innerText=t.marca;
-dFecha.innerText=t.fechaIngreso;
-dTecnico.innerText=t.tecnico;
-dPrioridad.innerText=t.prioridad;
-dEstado.innerText=t.estado;
-dDesc.innerText=t.descripcion;
+  ticketDetalleId = t.id;
 
-$('#detalleModal').modal('show');
+  dCaso.innerText = t.numeroCaso;
+  dTitulo.innerText = t.titulo;
+  dCliente.innerText = t.cliente;
+  dMarca.innerText = t.marca;
+  dFecha.innerText = t.fechaIngreso;
+  dTecnico.innerText = t.tecnico;
+  dPrioridad.innerText = t.prioridad;
+  dEstado.innerText = t.estado;
+  dDesc.innerText = t.descripcion;
+
+  $('#detalleModal').modal('show');
 
 });
 
 }
 
+function editarDesdeDetalle(){
+
+$('#detalleModal').modal('hide');
+
+setTimeout(() => {
+
+  editar(ticketDetalleId);
+
+}, 300);
+
+}
+
 function imprimirTicket(id){
 
-fetch('/api/tickets/' + id, {
-  credentials: 'include'
-})
+fetchAuth('/api/tickets/' + id)
 .then(r => r.json())
 .then(t => {
 
-let ventana = window.open('', '_blank');
+  let ventana = window.open('', '_blank');
 
-let html = `
-<html>
-<head>
-<title>Ticket ${t.numeroCaso}</title>
+  let html = `
+  <html>
+  <head>
+  <title>Ticket ${t.numeroCaso}</title>
 
-<style>
+  <style>
+    body{
+      font-family:Arial;
+      padding:30px;
+    }
 
-body{
-font-family:Arial;
-padding:30px;
-}
+    h2{
+      border-bottom:2px solid #000;
+      padding-bottom:10px;
+    }
 
-h2{
-border-bottom:2px solid #000;
-padding-bottom:10px;
-}
+    p{
+      font-size:18px;
+      margin:10px 0;
+    }
+  </style>
 
-p{
-font-size:18px;
-margin:10px 0;
-}
+  </head>
 
-</style>
+  <body>
 
-</head>
+  <h2>MUNDO ELECTRO</h2>
 
-<body>
+  <p><b>CASO:</b> ${t.numeroCaso}</p>
+  <p><b>Producto:</b> ${t.titulo}</p>
+  <p><b>Cliente:</b> ${t.cliente}</p>
+  <p><b>Marca:</b> ${t.marca}</p>
+  <p><b>Fecha:</b> ${t.fechaIngreso}</p>
+  <p><b>Técnico:</b> ${t.tecnico}</p>
+  <p><b>Prioridad:</b> ${t.prioridad}</p>
+  <p><b>Estado:</b> ${t.estado}</p>
+  <p><b>Descripción:</b> ${t.descripcion}</p>
 
-<h2>MUNDO ELECTRO</h2>
+  </body>
+  </html>
+  `;
 
-<p><b>CASO:</b> ${t.numeroCaso}</p>
-<p><b>Producto:</b> ${t.titulo}</p>
-<p><b>Cliente:</b> ${t.cliente}</p>
-<p><b>Marca:</b> ${t.marca}</p>
-<p><b>Fecha:</b> ${t.fechaIngreso}</p>
-<p><b>Técnico:</b> ${t.tecnico}</p>
-<p><b>Prioridad:</b> ${t.prioridad}</p>
-<p><b>Estado:</b> ${t.estado}</p>
-<p><b>Descripción:</b> ${t.descripcion}</p>
+  ventana.document.write(html);
+  ventana.document.close();
 
-</body>
-</html>
-`;
-
-ventana.document.write(html);
-
-ventana.document.close();
-
-ventana.onload = function(){
-
-ventana.print();
-
-};
+  ventana.onload = function () {
+    ventana.print();
+  };
 
 });
 
@@ -981,45 +1062,63 @@ fetch('/api/tickets/delete/'+id,{
 
 function restaurar(id){
 
-fetch('/api/tickets/restore/'+id,{
-  credentials:'include',
-  method:'PUT'
-})
-.then(async r => {
+  fetchAuth('/api/tickets/restore/' + id, {
+    method:'PUT'
+  })
+  .then(async r => {
 
-  if(!r.ok){
-    const err = await r.text();
+    if(!r.ok){
+      const err = await r.text();
+      console.log(err);
+      alert("Error al restaurar");
+      return;
+    }
+
+    cargarHistorial();
+    cargar();
+
+  })
+  .catch(err => {
     console.log(err);
-    alert("Error al restaurar");
-    return;
-  }
-
-  cargarHistorial();
-  cargar();
-
-})
-.catch(err => {
-  console.log(err);
-  alert("Error de conexión");
-});
+    alert("Error de conexión");
+  });
 
 }
 
 function crearUsuario(){
 
-fetch('/api/users',{
-  credentials: 'include',
+const u = newUser.value;
+const p = newPass.value;
+const r = newRole.value;
+
+if(!u || !p || !r){
+  alert("Completa todos los campos");
+  return;
+}
+
+fetchAuth('/api/users',{
+  credentials:'include',
   method:'POST',
-  headers:{
-    'Content-Type':'application/json'
-  },
+  headers:{'Content-Type':'application/json'},
   body:JSON.stringify({
-    username:newUser.value,
-    password:newPass.value,
-    role:newRole.value
+    username:u,
+    password:p,
+    role:r
   })
 })
-.then(()=>cargar());
+.then(async r => {
+
+  const data = await r.json();
+
+  if(!r.ok){
+    alert(data.error);
+    return;
+  }
+
+  cargarUsers();
+
+})
+.catch(err => console.log(err));
 
 }
 
@@ -1037,7 +1136,7 @@ fetch('/api/users/'+id,{
     role:document.getElementById('r'+id).value
   })
 })
-.then(()=>cargar());
+.then(()=>cargarUsers());
 
 }
 
@@ -1047,7 +1146,7 @@ fetch('/api/users/'+id,{
   credentials: 'include',
   method:'DELETE'
 })
-.then(()=>cargar());
+.then(()=>cargarUsers());
 
 }
 
@@ -1060,12 +1159,12 @@ headers:{
 'Content-Type':'application/json'
 },
 body:JSON.stringify({
-tipo:cTipo.value,
-nombre:cNombre.value,
-marca:cMarca.value,
-telefono:cTelefono.value,
-direccion:cDireccion.value,
-notas:cNotas.value
+tipo: document.getElementById('cTipo').value,
+nombre: document.getElementById('cNombre').value,
+marca: document.getElementById('cMarca').value,
+telefono: document.getElementById('cTelefono').value,
+direccion: document.getElementById('cDireccion').value,
+notas: document.getElementById('cNotas').value,
 })
 })
 .then(()=>{

@@ -6,6 +6,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const path = require('path');
+const helmet = require('helmet');
 
 const ticketsRoutes = require('./routes/tickets.routes');
 
@@ -54,7 +55,7 @@ hacerBackup();
 app.use(express.json());
 app.use(express.urlencoded({ extended:true }));
 app.use(express.static('public'));
-
+app.use(helmet());
 
 app.use(session({
   secret:'mundo-electro-super-seguro',
@@ -99,6 +100,31 @@ function auth(req,res,next){
 
   next();
 
+}
+
+function onlyAdmin(req,res,next){
+
+  if(!req.session.user || req.session.user.role !== 'admin'){
+    return res.status(403).json({error:'forbidden'});
+  }
+
+  next();
+}
+
+function requireRole(role){
+
+  return function(req,res,next){
+
+    if(!req.session.user){
+      return res.status(401).json({error:'no auth'});
+    }
+
+    if(req.session.user.role !== role){
+      return res.status(403).json({error:'forbidden'});
+    }
+
+    next();
+  };
 }
 
 // LOGS
@@ -225,7 +251,8 @@ app.post('/api/login',(req,res)=>{
         );
 
         res.json({
-          ok:true
+          ok:true,
+          role:user.role
         });
 
       }catch(e){
@@ -243,7 +270,7 @@ app.post('/api/login',(req,res)=>{
 
 
 // LOGS
-app.get('/api/logs',auth,(req,res)=>{
+app.get('/api/logs',auth,onlyAdmin,(req,res)=>{
 
   let {usuario,accion,desde,hasta}=req.query;
 
@@ -282,7 +309,7 @@ app.get('/api/logs',auth,(req,res)=>{
 
 
 // EXPORT CSV
-app.get('/api/logs/export',auth,(req,res)=>{
+app.get('/api/logs/export',auth,onlyAdmin,(req,res)=>{
 
   db.all(
     "SELECT * FROM logs ORDER BY id DESC",

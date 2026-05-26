@@ -2,6 +2,15 @@ const express = require('express');
 
 const ticketsService = require('../services/tickets.service');
 
+function onlyAdmin(req,res,next){
+
+  if(!req.session.user || req.session.user.role !== 'admin'){
+    return res.status(403).json({ error:'forbidden' });
+  }
+
+  next();
+}
+
 module.exports = (db, auth, logAction) => {
 
   const router = express.Router();
@@ -140,8 +149,7 @@ module.exports = (db, auth, logAction) => {
   // =========================
   // ELIMINAR
   // =========================
-  router.put('/delete/:id', auth, async (req, res) => {
-
+  router.put('/delete/:id', auth, onlyAdmin, async (req, res) => {
     try {
 
       const result = await service.eliminarTicket(req.params.id);
@@ -171,7 +179,7 @@ module.exports = (db, auth, logAction) => {
   // =========================
   // RESTAURAR
   // =========================
-  router.put('/restore/:id', auth, async (req, res) => {
+  router.put('/restore/:id', auth, onlyAdmin, async (req, res) => {
 
     try {
 
@@ -201,7 +209,7 @@ module.exports = (db, auth, logAction) => {
   // =========================
   // EDITAR
   // =========================
-  router.put('/:id', auth, async (req, res) => {
+  router.put('/:id', auth, onlyAdmin, async (req, res) => {
 
     try {
 
