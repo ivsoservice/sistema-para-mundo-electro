@@ -59,6 +59,154 @@ opacity:0.9;
   font-weight:bold;
 }
 
+.table{
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.table thead{
+  background:#343a40;
+  color:#fff;
+}
+
+.table-hover tbody tr:hover{
+  background:#f2f2f2;
+  transition:0.2s;
+}
+
+.card-box{
+  transition:0.2s;
+}
+
+.card-box:hover{
+  transform:translateY(-3px);
+}
+
+.badge-estado{
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.estado-ingresado{
+  background:#17a2b8;
+  color:#fff;
+}
+
+.estado-proceso{
+  background:#ffc107;
+  color:#000;
+}
+
+.estado-resuelto{
+  background:#28a745;
+  color:#fff;
+}
+
+.table-modern tbody tr{
+  transition:0.2s;
+}
+
+.table-modern tbody tr:hover{
+  background:#eef2f7;
+  transform:scale(1.01);
+}
+
+.table-modern td{
+  vertical-align:middle;
+}
+
+.table tbody tr{
+  transition:0.2s;
+}
+
+.table tbody tr:hover{
+  background:#eef2f7;
+  transform:scale(1.01);
+}
+
+.btn-modern {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+/* colores base */
+.btn-main {
+  background: #2d6cdf;
+  color: white;
+}
+
+.btn-main:hover {
+  background: #1f4fb8;
+}
+
+.btn-warn {
+  background: #f0ad4e;
+  color: white;
+}
+
+.btn-warn:hover {
+  background: #d98c1f;
+}
+
+.btn-danger {
+  background: #d9534f;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #b52b27;
+}
+
+#resultadosBusqueda{
+  position: absolute;
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  z-index: 9999;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border-radius: 8px;
+}
+
+#resultadosBusqueda{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  background: white;
+  z-index: 9999;
+
+  max-height: 300px;
+  overflow-y: auto;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border-radius: 8px;
+
+  margin-top: 5px;
+}
+
+.search-item{
+  padding:12px;
+  cursor:pointer;
+  border-bottom:1px solid #eee;
+  transition:0.15s;
+  background:white;
+}
+
+.search-item:hover{
+  background:#f2f6ff;
+  transform:scale(1.01);
+}
+
 </style>
 </head>
 
@@ -210,43 +358,39 @@ Panel Principal
 
 <div class="mb-3">
 
-  <input id="buscadorGlobal"
-         class="form-control"
-         placeholder="Buscar tickets (caso, cliente, marca, etc)">
+  <div style="position:relative; max-width:600px;">
+
+    <input id="buscadorGlobal"
+           class="form-control"
+           placeholder="Buscar tickets (caso, cliente, marca, etc)">
+
+    <div id="resultadosBusqueda"></div>
+
+  </div>
 
 </div>
-
-<div class="card mt-3 p-3">
-
-  <h5>Actividad reciente</h5>
-
-  <ul id="actividadReciente" class="list-group list-group-flush"></ul>
-
-</div>
-
-<div id="resultadosBusqueda"></div>
 
 <!-- CONTACTOS -->
 <div id="contactos" style="display:none;">
 
 <div class="mb-2">
 
-<select id="cTipo">
+<select id="cTipo" class="form-control">
   <option value="" disabled selected>Elegí tipo</option>
   <option value="post venta">Post venta</option>
   <option value="tecnico">Técnico</option>
   <option value="consulta">Consulta</option>
 </select>
 
-<input id="cNombre" placeholder="Nombre">
+<input id="cNombre" class="form-control" placeholder="Nombre">
 
-<input id="cMarca" placeholder="Marca">
+<input id="cMarca" class="form-control" placeholder="Marca">
 
-<input id="cTelefono" placeholder="Teléfono">
+<input id="cTelefono" class="form-control" placeholder="Teléfono">
 
-<input id="cDireccion" placeholder="Dirección">
+<input id="cEmail" class="form-control" placeholder="Email">
 
-<input id="cNotas" placeholder="Notas">
+<input id="cNotas" class="form-control" placeholder="Notas">
 
 <button onclick="crearContacto()"
 class="btn-modern btn-main">
@@ -256,6 +400,17 @@ Guardar
 </div>
 
 <table class="table">
+<thead>
+  <tr>
+    <th>Tipo</th>
+    <th>Nombre</th>
+    <th>Marca</th>
+    <th>Teléfono</th>
+    <th>Email</th>
+    <th>Notas</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
 <tbody id="listaContactos"></tbody>
 
 </table>
@@ -272,7 +427,17 @@ Guardar
 Nuevo Ticket
 </button>
 
-<table class="table table-hover">
+<table class="table table-hover table-modern">
+<thead>
+  <tr>
+    <th>N°</th>
+    <th>Producto</th>
+    <th>Cliente</th>
+    <th>Estado</th>
+    <th>Prioridad</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
 <tbody id="listaDiario"></tbody>
 </table>
 
@@ -298,6 +463,16 @@ Nuevo Ticket
 </button>
 
 <table class="table table-hover">
+<thead>
+  <tr>
+    <th>N°</th>
+    <th>Producto</th>
+    <th>Cliente</th>
+    <th>Estado</th>
+    <th>Prioridad</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
 <tbody id="listaDistribuidora"></tbody>
 </table>
 
@@ -319,6 +494,13 @@ Siguiente
 <div id="historial" style="display:none;">
 <table class="table">
 <tbody id="listaHistorial"></tbody>
+<thead>
+  <tr>
+    <th>N°</th>
+    <th>Producto</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
 </table>
 </div>
 
@@ -327,13 +509,14 @@ Siguiente
 
 <div class="mb-2">
 
-<input id="newUser" placeholder="Usuario">
+<input id="newUser" class="form-control" placeholder="Usuario">
 
-<input id="newPass" placeholder="Pass">
+<input id="newPass" class="form-control" placeholder="Pass">
 
-<select id="newRole">
-<option value="user">Usuario</option>
-<option value="admin">Admin</option>
+<select id="newRole" class="form-control">
+  <option value="" disabled selected>Elegí rol</option>
+  <option value="user">Usuario</option>
+  <option value="admin">Admin</option>
 </select>
 
 <button onclick="crearUsuario()" class="btn-modern btn-main">
@@ -342,7 +525,7 @@ Crear
 
 </div>
 
-<table class="table">
+<table class="table table-hover table-striped">
 <tbody id="listaUsuarios"></tbody>
 </table>
 
@@ -355,11 +538,11 @@ Crear
 
 <div class="mb-2">
 
-<input id="fUser" placeholder="Usuario">
-<input id="fAccion" placeholder="Acción">
+<input id="fUser" class="form-control" placeholder="Usuario">
+<input id="fAccion" class="form-control" placeholder="Acción">
 
-<input type="date" id="fDesde">
-<input type="date" id="fHasta">
+<input type="date" class="form-control" id="fDesde">
+<input type="date" class="form-control" id="fHasta">
 
 <button onclick="cargarLogs()" class="btn-modern btn-main">
 Filtrar
@@ -638,27 +821,6 @@ fetch('/api/tickets?tipo=' + tipoActual,{
       data.eliminados || 0;
   }
 
-  // ACTIVIDAD
-
-  const actividad = document.getElementById('actividadReciente');
-
-  if(actividad && data.ultimasAcciones){
-
-    actividad.innerHTML = '';
-
-    data.ultimasAcciones.forEach(a => {
-
-      actividad.innerHTML += `
-        <li class="list-group-item">
-          <b>${a.usuario}</b> - ${a.accion}
-          <br>
-          <small>${a.detalle}</small>
-        </li>
-      `;
-
-    });
-
-  }
 
 })
 .catch(err => {
@@ -918,7 +1080,7 @@ function cargarContactos(){
         </td>
 
         <td>
-          ${c.direccion || '-'}
+          ${c.email || '-'}
         </td>
 
         <td style="max-width:220px;">
@@ -967,7 +1129,7 @@ fetch('/api/tickets/historial',{
 
       <td>
 
-        <button class="btn-modern btn-ok"
+        <button class="btn-modern btn-main"
         onclick="restaurar(${t.id})">
         Restaurar
         </button>
@@ -1013,8 +1175,10 @@ fetchAuth('/api/users')
       </td>
 
       <td>
-        <button onclick="guardarUser(${u.id})">Guardar</button>
-        <button onclick="borrarUser(${u.id})">Borrar</button>
+        <button class="btn-modern btn-main" onclick="guardarUser(${u.id})">Guardar</button>
+        <button class="btn-modern btn-danger" onclick="borrarUser(${u.id})">
+        Borrar
+        </button>
       </td>
     </tr>
     `;
@@ -1290,30 +1454,28 @@ function crearContacto(){
 fetch('/api/contactos',{
   credentials: 'include',
   method:'POST',
-headers:{
-'Content-Type':'application/json'
-},
-body:JSON.stringify({
-tipo: document.getElementById('cTipo').value,
-nombre: document.getElementById('cNombre').value,
-marca: document.getElementById('cMarca').value,
-telefono: document.getElementById('cTelefono').value,
-direccion: document.getElementById('cDireccion').value,
-notas: document.getElementById('cNotas').value,
-})
+  headers:{
+    'Content-Type':'application/json'
+  },
+  body:JSON.stringify({
+    tipo: document.getElementById('cTipo').value,
+    nombre: document.getElementById('cNombre').value,
+    marca: document.getElementById('cMarca').value,
+    telefono: document.getElementById('cTelefono').value,
+    email: document.getElementById('cEmail').value,
+    notas: document.getElementById('cNotas').value,
+  })
 })
 .then(()=>{
   cargarContactos();
   cargar();
 
-cNombre.value='';
-cMarca.value='';
-cTelefono.value='';
-cDireccion.value='';
-cNotas.value='';
-
+  cNombre.value='';
+  cMarca.value='';
+  cTelefono.value='';
+  cEmail.value='';   // 👈 ESTE ES EL ultimo cambio
+  cNotas.value='';
 });
-
 }
 
 function borrarContacto(id){
@@ -1373,6 +1535,25 @@ function anteriorPagina(){
 const buscador = document.getElementById("buscadorGlobal");
 const resultados = document.getElementById("resultadosBusqueda");
 
+document.addEventListener('click', (e) => {
+
+  const esBuscador = buscador.contains(e.target);
+  const esResultados = resultados.contains(e.target);
+
+  if (!esBuscador && !esResultados) {
+    buscador.value = '';
+    resultados.innerHTML = '';
+  }
+
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    buscador.value = '';
+    resultados.innerHTML = '';
+  }
+});
+
 let timeout = null;
 
 buscador.addEventListener('input', () => {
@@ -1403,35 +1584,25 @@ buscador.addEventListener('input', () => {
 
       resultados.innerHTML = data.map(t => {
 
-        return `
-        <div class="card p-2 mb-2"
-        onclick="verDetalle(${t.id})">
+  return `
+    <div class="search-item"
+         onclick="verDetalle(${t.id})">
 
-          <b>${t.numeroCaso}</b>
-          - ${t.titulo}<br>
+      <b>#${t.numeroCaso}</b>
+      - ${t.titulo}
 
-          <small>
-            ${t.cliente}
-            |
-            ${t.marca}
-            |
-            ${t.estado}
-          </small>
+      <div style="font-size:12px;color:#666; margin-top:4px;">
+        ${t.cliente}
+        |
+        ${t.marca}
+        |
+        ${t.estado}
+      </div>
 
-        </div>
-        `;
+    </div>
+  `;
 
-      }).join('');
-
-    } catch(err){
-
-      console.log(err);
-
-    }
-
-  }, 300);
-
-});
+}).join('');
 
 </script>
 </body>
