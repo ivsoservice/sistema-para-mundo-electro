@@ -11,7 +11,12 @@ function listarTickets(tipo, page = 1) {
       SELECT
         COUNT(*) as total,
         SUM(CASE WHEN tipo='diario' THEN 1 ELSE 0 END) as totalDiario,
-        SUM(CASE WHEN tipo='distribuidora' THEN 1 ELSE 0 END) as totalDistribuidora
+        SUM(CASE WHEN tipo='distribuidora' THEN 1 ELSE 0 END) as totalDistribuidora,
+        SUM(CASE WHEN estado='Ingresado' THEN 1 ELSE 0 END) as ingresados,
+        SUM(CASE WHEN estado='En proceso' THEN 1 ELSE 0 END) as proceso,
+        SUM(CASE WHEN estado='Resuelto' THEN 1 ELSE 0 END) as resueltos,
+
+        SUM(CASE WHEN eliminado=1 THEN 1 ELSE 0 END) as eliminados
       FROM tickets
       WHERE eliminado=0
     `, (err, countResult) => {
@@ -46,7 +51,13 @@ function listarTickets(tipo, page = 1) {
             totalTickets: countResult.total,
             totalDiario: countResult.totalDiario || 0,
             totalDistribuidora:
-            countResult.totalDistribuidora || 0
+            countResult.totalDistribuidora || 0,
+            ingresados: countResult.ingresados || 0,
+            proceso: countResult.proceso || 0,
+            resueltos: countResult.resueltos || 0,
+            eliminados: countResult.eliminados || 0
+             
+            
           });
 
         });

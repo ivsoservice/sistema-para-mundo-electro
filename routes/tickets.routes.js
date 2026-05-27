@@ -50,7 +50,7 @@ module.exports = (db, auth, logAction) => {
 
     } catch (err) {
 
-      console.log(err);
+      console.log("ERROR LISTAR TICKETS:", err);
 
       res.status(500).json({
         success: false,

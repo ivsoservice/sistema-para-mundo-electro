@@ -39,6 +39,26 @@ opacity:0.9;
 .btn-ok{background:#28a745;color:#fff;}
 .btn-warn{background:#ffc107;color:#000;}
 .btn-danger{background:#dc3545;color:#fff;}
+
+.card-box{
+  border-radius:12px;
+  padding:20px;
+  color:#fff;
+  text-align:center;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.card-box h5{
+  font-size:14px;
+  opacity:0.9;
+}
+
+.card-box h2{
+  font-size:32px;
+  margin:0;
+  font-weight:bold;
+}
+
 </style>
 </head>
 
@@ -130,10 +150,62 @@ Contactos
 <h3 id="tituloVista" class="mb-3">
 Panel Principal
 </h3>
-<div class="mb-2">
-  <b>Total:</b> <span id="total">0</span> |
-  <b>Diario:</b> <span id="cDiario">0</span> |
-  <b>Distribuidora:</b> <span id="cDistribuidora">0</span>
+
+<div class="row mb-3">
+
+  <div class="col-md-3">
+    <div class="card-box bg-main">
+      <h5>Ingresados</h5>
+      <h2 id="tIngresados">0</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card-box bg-warn">
+      <h5>En proceso</h5>
+      <h2 id="tProceso">0</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card-box bg-ok">
+      <h5>Resueltos</h5>
+      <h2 id="tResueltos">0</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card-box bg-main">
+      <h5>Eliminados</h5>
+      <h2 id="tEliminados">0</h2>
+    </div>
+  </div>
+
+</div>
+
+<div class="row mb-3">
+
+  <div class="col-md-4">
+    <div class="card-box bg-main">
+      <h5>Total Tickets</h5>
+      <h2 id="total">0</h2>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card-box bg-ok">
+      <h5>Pago Diario</h5>
+      <h2 id="cDiario">0</h2>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card-box bg-warn">
+      <h5>Distribuidora</h5>
+      <h2 id="cDistribuidora">0</h2>
+    </div>
+  </div>
+
 </div>
 
 <div class="mb-3">
@@ -141,6 +213,14 @@ Panel Principal
   <input id="buscadorGlobal"
          class="form-control"
          placeholder="Buscar tickets (caso, cliente, marca, etc)">
+
+</div>
+
+<div class="card mt-3 p-3">
+
+  <h5>Actividad reciente</h5>
+
+  <ul id="actividadReciente" class="list-group list-group-flush"></ul>
 
 </div>
 
@@ -410,6 +490,16 @@ window.onerror = function(msg){
   console.log("ERROR CAPTURADO:", msg);
   return false;
 };
+
+function logoutAuto(){
+
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginBox').style.display = 'block';
+
+  alert('Sesión expirada. Volvé a iniciar sesión.');
+
+}
+
 </script>
 
 <script>
@@ -421,6 +511,7 @@ window.logoutAuto = function () {
 
   alert('Sesión expirada. Volvé a iniciar sesión.');
 };
+
 
 function fetchAuth(url, options = {}){
 
@@ -444,6 +535,140 @@ function fetchAuth(url, options = {}){
 }
 
 // MI SISTEMA GRANDE EMPIEZA ACÁ
+function cargar(){
+
+fetch('/api/tickets?tipo=' + tipoActual,{
+  credentials:'include'
+})
+.then(r => r.json())
+.then(data => {
+
+  console.log("DATA TICKETS:", data);
+
+  if (!data || !data.tickets) return;
+
+  listaDiario.innerHTML = '';
+  listaDistribuidora.innerHTML = '';
+
+  data.tickets.forEach(t => {
+
+    let row = `
+      <tr onclick="verDetalle(${t.id})">
+
+        <td>${t.numeroCaso}</td>
+
+        <td>${t.titulo}</td>
+
+        <td>${t.cliente}</td>
+
+        <td>${t.estado || 'Ingresado'}</td>
+
+        <td>
+          <span class="prio-${t.prioridad}">
+            ${t.prioridad}
+          </span>
+        </td>
+
+        <td>
+
+          <button class="btn-modern btn-warn"
+          onclick="event.stopPropagation(); editar(${t.id})">
+          Editar
+          </button>
+
+          <button class="btn-modern btn-danger"
+          onclick="event.stopPropagation(); borrar(${t.id})">
+          Borrar
+          </button>
+
+          <button class="btn-modern btn-main"
+          onclick="event.stopPropagation(); imprimirTicket(${t.id})">
+          Imprimir
+          </button>
+
+        </td>
+
+      </tr>
+    `;
+
+    if (t.tipo === 'diario'){
+      listaDiario.innerHTML += row;
+    }
+
+    if (t.tipo === 'distribuidora'){
+      listaDistribuidora.innerHTML += row;
+    }
+
+  });
+
+  // CONTADORES
+
+  if(document.getElementById('total')){
+    document.getElementById('total').innerText =
+      data.totalTickets || 0;
+  }
+
+  if(document.getElementById('cDiario')){
+    document.getElementById('cDiario').innerText =
+      data.totalDiario || 0;
+  }
+
+  if(document.getElementById('cDistribuidora')){
+    document.getElementById('cDistribuidora').innerText =
+      data.totalDistribuidora || 0;
+  }
+
+  if(document.getElementById('tIngresados')){
+    document.getElementById('tIngresados').innerText =
+      data.ingresados || 0;
+  }
+
+  if(document.getElementById('tProceso')){
+    document.getElementById('tProceso').innerText =
+      data.proceso || 0;
+  }
+
+  if(document.getElementById('tResueltos')){
+    document.getElementById('tResueltos').innerText =
+      data.resueltos || 0;
+  }
+
+  if(document.getElementById('tEliminados')){
+    document.getElementById('tEliminados').innerText =
+      data.eliminados || 0;
+  }
+
+  // ACTIVIDAD
+
+  const actividad = document.getElementById('actividadReciente');
+
+  if(actividad && data.ultimasAcciones){
+
+    actividad.innerHTML = '';
+
+    data.ultimasAcciones.forEach(a => {
+
+      actividad.innerHTML += `
+        <li class="list-group-item">
+          <b>${a.usuario}</b> - ${a.accion}
+          <br>
+          <small>${a.detalle}</small>
+        </li>
+      `;
+
+    });
+
+  }
+
+})
+.catch(err => {
+
+  console.log("ERROR CARGAR:", err);
+
+});
+
+}
+
 
 let tipoActual='diario';
 let tipoTicket='diario';
@@ -647,96 +872,6 @@ cargar();
 .catch(()=>{
 
 alert('Error de conexión o validación');
-
-});
-
-}
-
-function cargar(){
-
-let pagina = tipoActual === 'distribuidora'
-  ? paginaDistribuidora
-  : paginaDiario;
-
-fetch('/api/tickets?page=' + pagina + '&tipo=' + tipoActual,{
-  credentials: 'include'
-})
-.then(r => {
-
-if(r.status === 401){
-  logoutAuto();
-  return;
-}
-
-return r.json();
-
-})
-.then(data => {
-
-if(!data) return;
-
-if (!data || !data.tickets) return;
-
-listaDiario.innerHTML = '';
-listaDistribuidora.innerHTML = '';
-
-data.tickets.forEach(t => {
-
-let row = `
-<tr onclick="verDetalle(${t.id})">
-
-<td>${t.numeroCaso}</td>
-<td>${t.titulo}</td>
-<td>${t.cliente}</td>
-<td>${t.estado || 'Ingresado'}</td>
-
-<td>
-<span class="prio-${t.prioridad}">
-${t.prioridad}
-</span>
-</td>
-
-<td>
-<button class="btn-modern btn-warn"
-onclick="event.stopPropagation(); editar(${t.id})">
-Editar
-</button>
-
-<button class="btn-modern btn-danger"
-onclick="event.stopPropagation(); borrar(${t.id})">
-Borrar
-</button>
-
-<button class="btn-modern btn-main"
-onclick="event.stopPropagation(); imprimirTicket(${t.id})">
-Imprimir
-</button>
-</td>
-
-</tr>`;
-
-if (t.tipo === 'diario') listaDiario.innerHTML += row;
-if (t.tipo === 'distribuidora') listaDistribuidora.innerHTML += row;
-
-});
-
-function logoutAuto(){
-
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('loginBox').style.display = 'block';
-
-  alert('Sesión expirada. Volvé a iniciar sesión.');
-
-}
-
-// 🔥 FIX IMPORTANTE
-const total = document.getElementById('total');
-const cDiario = document.getElementById('cDiario');
-const cDistribuidora = document.getElementById('cDistribuidora');
-
-if (total) total.innerText = data.totalTickets || data.tickets.length;
-if (cDiario) cDiario.innerText = data.totalDiario || 0;
-if (cDistribuidora) cDistribuidora.innerText = data.totalDistribuidora || 0;
 
 });
 
