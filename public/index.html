@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="/img/logomini.png">
 <title>Mundo Electro - Sistema</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
@@ -207,6 +208,46 @@ opacity:0.9;
   transform:scale(1.01);
 }
 
+body {
+  background: #f4f6f9;
+}
+
+.content-wrapper{
+  background: #ffffff;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.content-wrapper {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  min-height: 100vh;
+}
+
+/* elimina la “franja fea” inferior */
+.main-footer {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  border-top: none;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.wrapper {
+  overflow: hidden;
+}
+
 </style>
 </head>
 
@@ -217,7 +258,8 @@ opacity:0.9;
 <div class="login-box">
 <div class="card p-4 text-center">
 
-<h4>MUNDO ELECTRO</h4>
+<img src="/img/logo.png"
+     style="max-width:350px; margin-bottom:15px;">
 
 <input id="user" class="form-control mb-2" placeholder="Usuario">
 
@@ -239,7 +281,8 @@ Ingresar
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
 
 <a class="brand-link text-center">
-MUNDO ELECTRO
+  <img src="/img/logo.png"
+       style="max-width:180px;">
 </a>
 
 <div class="sidebar">

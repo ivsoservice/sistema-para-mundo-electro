@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const contactosRoutes = require('./routes/contactos.routes');
 const usersRoutes = require('./routes/users.routes');
 const express = require('express');
@@ -12,8 +14,8 @@ const ticketsRoutes = require('./routes/tickets.routes');
 
 
 const app = express();
-const db = new sqlite3.Database('./tickets.db');
-const backupDir = './backups';
+const db = new sqlite3.Database(process.env.DB_PATH || './tickets.db');
+const backupDir = process.env.BACKUP_DIR || './backups';
 
 if(!fs.existsSync(backupDir)){
 fs.mkdirSync(backupDir);
@@ -335,7 +337,7 @@ app.get('/api/logs/export',auth,onlyAdmin,(req,res)=>{
 });
 
 
-const PORT=3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT,()=>{
 
