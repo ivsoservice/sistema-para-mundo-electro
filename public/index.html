@@ -493,22 +493,31 @@ Mundo Electro
     <li class="nav-item dropdown">
 
       <a class="nav-link" data-toggle="dropdown" href="#">
-        <i class="fa-solid fa-circle-user fa-lg"></i>
-      </a>
+  <i class="fa-solid fa-circle-user fa-lg"></i>
+</a>
 
-      <div class="dropdown-menu dropdown-menu-right">
+<div class="dropdown-menu dropdown-menu-right">
 
-        <a href="#" class="dropdown-item">
-          <i class="fa-solid fa-gear mr-2"></i> Configuración
-        </a>
+  <div class="dropdown-item text-center" style="pointer-events:none;">
+    <i class="fa-solid fa-user mr-2"></i>
+    <b id="usuarioActual">Usuario</b>
+  </div>
 
-        <div class="dropdown-divider"></div>
+  <div class="dropdown-divider"></div>
 
-        <a href="#" onclick="location.reload()" class="dropdown-item text-danger">
-          <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar sesión
-        </a>
+  <a href="#" class="dropdown-item">
+    <i class="fa-solid fa-gear mr-2"></i>
+    Configuración
+  </a>
 
-      </div>
+  <div class="dropdown-divider"></div>
+
+  <a href="#" onclick="location.reload()" class="dropdown-item text-danger">
+    <i class="fa-solid fa-right-from-bracket mr-2"></i>
+    Cerrar sesión
+  </a>
+
+</div>
 
     </li>
 
@@ -1104,7 +1113,16 @@ function login(){
     }
 
     // ✔ guardar rol
-    window.userRole = data.role;
+window.userRole = data.role;
+
+// ✔ guardar username
+window.username = data.username;
+
+document.getElementById('usuarioActual').innerText =
+  window.username;
+
+document.getElementById('usuarioActual').innerText =
+  window.username;
 
     // ✔ mostrar app
     document.getElementById('loginBox').style.display = 'none';

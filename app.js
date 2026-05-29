@@ -254,6 +254,7 @@ app.post('/api/login',(req,res)=>{
 
         res.json({
           ok:true,
+          username:user.username,
           role:user.role
         });
 
