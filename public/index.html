@@ -11,7 +11,7 @@
 
 <style>
 body{font-size:14px;}
-.card-box{border-radius:10px;padding:15px;color:#fff;}
+
 .bg-main{background:#343a40;}
 .bg-ok{background:#28a745;}
 .bg-warn{background:#ffc107;color:#000;}
@@ -42,13 +42,6 @@ opacity:0.9;
 .btn-warn{background:#ffc107;color:#000;}
 .btn-danger{background:#dc3545;color:#fff;}
 
-.card-box{
-  border-radius:12px;
-  padding:20px;
-  color:#fff;
-  text-align:center;
-  box-shadow:0 4px 10px rgba(0,0,0,0.15);
-}
 
 .card-box h5{
   font-size:14px;
@@ -245,27 +238,55 @@ body{
 }
 
 .card-box{
+  position:relative;
+  overflow:hidden;
+
   background:#ffffff;
-  border-radius:18px;
-  padding:25px;
+  border-radius:20px;
+  padding:28px;
+
   color:#1f2937 !important;
-  text-align:center;
-  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  text-align:left;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.08);
+
   border:1px solid #e5e7eb;
+
+  transition:0.25s;
+}
+
+.card-box:hover{
+  transform:translateY(-5px);
+  box-shadow:
+    0 16px 35px rgba(0,0,0,0.12);
+}
+
+.card-box h5{
+  font-size:14px;
+  font-weight:600;
+  color:#6b7280;
+  margin-bottom:10px;
+}
+
+.card-box h2{
+  font-size:38px;
+  font-weight:700;
+  margin:0;
 }
 
 .bg-main{
-  border-top:4px solid #06b6d4;
+  border-top:6px solid #06b6d4;
   background:white !important;
 }
 
 .bg-ok{
-  border-top:4px solid #22c55e;
+  border-top:6px solid #22c55e;
   background:white !important;
 }
 
 .bg-warn{
-  border-top:4px solid #f59e0b;
+  border-top:6px solid #f59e0b;
   background:white !important;
 }
 
@@ -373,6 +394,133 @@ body{
 .sidebar-clock{
   font-size:12px;
   opacity:0.8;
+}
+
+.card-box.kpi h5 {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.card-box.kpi h2 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.card-box.kpi i {
+  position: absolute;
+  right: 15px;
+  bottom: 10px;
+  font-size: 70px;
+  opacity: 0.08;
+}
+
+.card-box{
+  border-radius:16px;
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+  transition:0.25s;
+}
+
+/* efecto hover más pro */
+.card-box:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
+
+/* títulos */
+.card-box h5{
+  font-size:13px;
+  opacity:0.8;
+}
+
+/* números más fuertes */
+.card-box h2{
+  font-size:34px;
+  font-weight:700;
+}
+
+/* glow sutil según color */
+.card-box.bg-main{
+  background:#ffffff !important;
+  border-left:4px solid #06b6d4;
+}
+
+.card-box.bg-ok{
+  background:#ffffff !important;
+  border-left:4px solid #22c55e;
+}
+
+.card-box.bg-warn{
+  background:#ffffff !important;
+  border-left:4px solid #f59e0b;
+}
+
+/* icono decorativo mejor integrado */
+.card-box i{
+  position:absolute;
+  right:15px;
+  bottom:10px;
+  font-size:55px;
+  opacity:0.08;
+}
+
+/* ===== KPI ABAJO (TOTAL / DIARIO / DISTRIBUIDORA) ===== */
+
+#total, #cDiario, #cDistribuidora {
+  font-size: 34px;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* hover pro */
+.card-box:has(#total):hover,
+.card-box:has(#cDiario):hover,
+.card-box:has(#cDistribuidora):hover{
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+}
+
+/* ===== KPI FINAL LIMPIO ===== */
+
+.card-box.kpi{
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+  transition: 0.25s;
+  border: 1px solid #e5e7eb;
+}
+
+.card-box.kpi:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+.card-box.kpi h5{
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.card-box.kpi h2{
+  font-size: 40px;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* colores individuales SOLO por ID */
+#total, #cDiario, #cDistribuidora{
+  color:#111827;
+}
+
+/* borde diferenciado */
+.card-box.kpi:nth-child(1){
+  border-top: 4px solid #06b6d4;
 }
 
 </style>
@@ -533,54 +681,98 @@ Panel Principal
 
 <div class="row mb-3">
 
-  <div class="col-md-3">
-    <div class="card-box bg-main">
-      <h5>Ingresados</h5>
-      <h2 id="tIngresados">0</h2>
-    </div>
-  </div>
+<div class="col-md-3">
+  <div class="card-box bg-main">
 
-  <div class="col-md-3">
-    <div class="card-box bg-warn">
-      <h5>En proceso</h5>
-      <h2 id="tProceso">0</h2>
-    </div>
-  </div>
+    <div class="d-flex justify-content-between align-items-center">
 
-  <div class="col-md-3">
-    <div class="card-box bg-ok">
-      <h5>Resueltos</h5>
-      <h2 id="tResueltos">0</h2>
-    </div>
-  </div>
+      <div>
+        <h5>Ingresados</h5>
+        <h2 id="tIngresados">0</h2>
+      </div>
 
-  <div class="col-md-3">
-    <div class="card-box bg-main">
-      <h5>Eliminados</h5>
-      <h2 id="tEliminados">0</h2>
+      <i class="fa-solid fa-inbox"
+         style="font-size:42px;opacity:0.45;"></i>
+
     </div>
+
   </div>
+</div>
+
+<div class="col-md-3">
+  <div class="card-box bg-warn">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div>
+        <h5>En proceso</h5>
+        <h2 id="tProceso">0</h2>
+      </div>
+
+      <i class="fa-solid fa-gears"
+         style="font-size:42px;opacity:0.45;"></i>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="col-md-3">
+  <div class="card-box bg-ok">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div>
+        <h5>Resueltos</h5>
+        <h2 id="tResueltos">0</h2>
+      </div>
+
+      <i class="fa-solid fa-circle-check"
+         style="font-size:42px;opacity:0.45;"></i>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="col-md-3">
+  <div class="card-box bg-main">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div>
+        <h5>Eliminados</h5>
+        <h2 id="tEliminados">0</h2>
+      </div>
+
+      <i class="fa-solid fa-trash"
+         style="font-size:42px;opacity:0.45;"></i>
+
+    </div>
+
+  </div>
+</div>
 
 </div>
 
 <div class="row mb-3">
 
   <div class="col-md-4">
-    <div class="card-box bg-main">
+    <div class="card-box kpi">
       <h5>Total Tickets</h5>
       <h2 id="total">0</h2>
     </div>
   </div>
 
   <div class="col-md-4">
-    <div class="card-box bg-ok">
+    <div class="card-box kpi">
       <h5>Pago Diario</h5>
       <h2 id="cDiario">0</h2>
     </div>
   </div>
 
   <div class="col-md-4">
-    <div class="card-box bg-warn">
+    <div class="card-box kpi">
       <h5>Distribuidora</h5>
       <h2 id="cDistribuidora">0</h2>
     </div>
@@ -654,8 +846,6 @@ Guardar
 </table>
 
 </div>
-
-<div id="resultadosBusqueda"></div>
 
 
 <!-- DIARIO -->
