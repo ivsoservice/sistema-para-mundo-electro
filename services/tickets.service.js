@@ -18,7 +18,7 @@ function listarTickets(tipo, page = 1) {
 
         SUM(CASE WHEN eliminado=1 THEN 1 ELSE 0 END) as eliminados
       FROM tickets
-      WHERE eliminado=0
+      
     `, (err, countResult) => {
 
       if (err) return reject(err);

@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="/img/logomini.png">
-<title>Mundo Electro - Sistema</title>
+<title>Ivso Desk | Mundo Electro</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
 body{font-size:14px;}
@@ -208,44 +209,170 @@ opacity:0.9;
   transform:scale(1.01);
 }
 
-body {
-  background: #f4f6f9;
+body{
+  background:#eef1f5;
+  color:#1f2937;
 }
 
 .content-wrapper{
-  background: #ffffff;
+  background:#eef1f5;
+  min-height:100vh;
+  padding:25px;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+.main-sidebar{
+  background:linear-gradient(
+    180deg,
+    #0f172a,
+    #111827
+  ) !important;
 }
 
-.wrapper {
-  min-height: 100vh;
-  background: transparent;
+.brand-link{
+  border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
-.content-wrapper {
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(6px);
-  min-height: 100vh;
+.nav-sidebar .nav-link{
+  border-radius:12px;
+  margin-bottom:6px;
+  color:#e5e7eb !important;
+  transition:0.2s;
 }
 
-/* elimina la “franja fea” inferior */
-.main-footer {
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(6px);
-  border-top: none;
+.nav-sidebar .nav-link:hover{
+  background:#06b6d4 !important;
+  color:white !important;
 }
 
-body {
-  overflow-x: hidden;
+.card-box{
+  background:#ffffff;
+  border-radius:18px;
+  padding:25px;
+  color:#1f2937 !important;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  border:1px solid #e5e7eb;
 }
 
-.wrapper {
-  overflow: hidden;
+.bg-main{
+  border-top:4px solid #06b6d4;
+  background:white !important;
+}
+
+.bg-ok{
+  border-top:4px solid #22c55e;
+  background:white !important;
+}
+
+.bg-warn{
+  border-top:4px solid #f59e0b;
+  background:white !important;
+}
+
+.table{
+  background:white !important;
+  color:#1f2937 !important;
+}
+
+.table thead{
+  background:#111827 !important;
+  color:white !important;
+}
+
+.table tbody tr:hover{
+  background:#f3f4f6 !important;
+}
+
+.form-control{
+  border-radius:12px;
+  border:1px solid #d1d5db;
+}
+
+.form-control:focus{
+  border-color:#06b6d4;
+  box-shadow:none;
+}
+
+.modal-content{
+  border-radius:18px;
+}
+
+.btn-main{
+  background:#06b6d4;
+  color:white;
+}
+
+.btn-main:hover{
+  background:#0891b2;
+}
+
+.main-header{
+  background:#ffffff;
+  border-bottom:1px solid #e5e7eb;
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.main-header .nav-link{
+  color:#111827 !important;
+  font-weight:500;
+}
+
+.main-sidebar{
+  background:linear-gradient(180deg,#0f172a,#111827) !important;
+}
+
+.nav-sidebar .nav-link{
+  border-radius:10px;
+  margin:4px 8px;
+  color:#e5e7eb !important;
+  transition:0.2s;
+}
+
+.nav-sidebar .nav-link:hover{
+  background:#06b6d4 !important;
+  color:white !important;
+  transform:translateX(3px);
+}
+
+.nav-sidebar .nav-link i{
+  width:20px;
+}
+
+.search-wrapper{
+  position: relative;
+  max-width: 600px;
+}
+
+.search-icon{
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.search-input{
+  padding-left: 35px;
+  border-radius: 12px;
+}
+
+.sidebar-footer{
+  padding:15px;
+  color:#9ca3af;
+  font-size:12px;
+  text-align:center;
+}
+
+.sidebar-line{
+  height:1px;
+  background:rgba(255,255,255,0.1);
+  margin-bottom:10px;
+}
+
+.sidebar-clock{
+  font-size:12px;
+  opacity:0.8;
 }
 
 </style>
@@ -278,7 +405,7 @@ Ingresar
 <!-- APP -->
 <div id="app" style="display:none;" class="wrapper">
 
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark elevation-4">
 
 <a class="brand-link text-center">
   <img src="/img/logo.png"
@@ -291,50 +418,103 @@ Ingresar
 
 <li class="nav-item">
 <a onclick="vista('panel')" class="nav-link">
+<i class="fa-solid fa-chart-line"></i>
 Panel Principal
 </a>
 </li>
 
 <li class="nav-item">
 <a onclick="vista('diario')" class="nav-link">
+<i class="fa-solid fa-cash-register mr-2"></i>
 Pago Diario
 </a>
 </li>
 
 <li class="nav-item">
 <a onclick="vista('distribuidora')" class="nav-link">
+<i class="fa-solid fa-truck mr-2"></i>
 Distribuidora
 </a>
 </li>
 
 <li class="nav-item">
 <a onclick="vista('historial')" class="nav-link">
+<i class="fa-solid fa-clock-rotate-left mr-2"></i>
 Historial
 </a>
 </li>
 
 <li class="nav-item" id="menuUsuarios">
 <a onclick="vista('usuarios')" class="nav-link">
+<i class="fa-solid fa-users mr-2"></i>
 Usuarios
 </a>
 </li>
 
 <li class="nav-item" id="menuLogs">
 <a onclick="vista('logs')" class="nav-link">
+<i class="fa-solid fa-file-lines mr-2"></i>
 Logs
 </a>
 </li>
 
 <li class="nav-item" id="menuContactos">
 <a onclick="vista('contactos')" class="nav-link">
+<i class="fa-solid fa-address-book mr-2"></i>
 Contactos
 </a>
 </li>
 
 </ul>
 
+<div class="sidebar-footer mt-3">
+  <div class="sidebar-line"></div>
+  <div id="relojSidebar" class="sidebar-clock"></div>
 </div>
 </aside>
+
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+
+  <ul class="navbar-nav">
+
+
+    <li class="nav-item d-none d-sm-inline-block">
+      <span class="nav-link">
+        <b>Ivso Desk</b>
+<span style="font-size:12px;opacity:0.6;margin-left:6px;">
+Mundo Electro
+      </span>
+    </li>
+
+  </ul>
+
+  <ul class="navbar-nav ml-auto">
+
+    <li class="nav-item dropdown">
+
+      <a class="nav-link" data-toggle="dropdown" href="#">
+        <i class="fa-solid fa-circle-user fa-lg"></i>
+      </a>
+
+      <div class="dropdown-menu dropdown-menu-right">
+
+        <a href="#" class="dropdown-item">
+          <i class="fa-solid fa-gear mr-2"></i> Configuración
+        </a>
+
+        <div class="dropdown-divider"></div>
+
+        <a href="#" onclick="location.reload()" class="dropdown-item text-danger">
+          <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar sesión
+        </a>
+
+      </div>
+
+    </li>
+
+  </ul>
+
+</nav>
 
 <div class="content-wrapper p-3">
 
@@ -403,9 +583,15 @@ Panel Principal
 
   <div style="position:relative; max-width:600px;">
 
-    <input id="buscadorGlobal"
-           class="form-control"
-           placeholder="Buscar tickets (caso, cliente, marca, etc)">
+<div class="search-wrapper">
+
+  <i class="fa-solid fa-magnifying-glass search-icon"></i>
+
+  <input id="buscadorGlobal"
+         class="form-control search-input"
+         placeholder="Buscar tickets por caso, cliente, marca...">
+
+</div>
 
     <div id="resultadosBusqueda"></div>
 
@@ -615,6 +801,13 @@ Exportar CSV
 
 </div>
 
+</div>
+
+<div class="text-center mt-4 mb-2 text-muted" style="font-size:13px;">
+  <span style="border:1px solid #ccc;border-radius:50%;padding:2px 6px;">
+    ©
+  </span>
+  2026 <b>Ivso Desk</b> — Sistema de gestión de tickets para Mundo Electro
 </div>
 
 <!-- MODAL -->
@@ -1658,5 +1851,23 @@ buscador.addEventListener('input', () => {
 });
 
 </script>
+
+<script>
+function actualizarReloj(){
+  const ahora = new Date();
+
+  const fecha = ahora.toLocaleDateString('es-AR');
+  const hora = ahora.toLocaleTimeString('es-AR');
+
+  const el = document.getElementById("relojSidebar");
+  if(el){
+    el.innerHTML = fecha + " " + hora;
+  }
+}
+
+setInterval(actualizarReloj, 1000);
+actualizarReloj();
+</script>
+
 </body>
 </html>
