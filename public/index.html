@@ -613,6 +613,13 @@ Contactos
 </a>
 </li>
 
+<li class="nav-item">
+<a onclick="vista('ordenes')" class="nav-link">
+<i class="fa-solid fa-file-signature mr-2"></i>
+Órdenes de Servicio
+</a>
+</li>
+
 </ul>
 
 <div class="sidebar-footer mt-3">
@@ -848,6 +855,27 @@ Guardar
 <tbody id="listaContactos"></tbody>
 
 </table>
+
+</div>
+
+<!-- ORDENES DE SERVICIO -->
+<div id="ordenes" style="display:none;">
+
+  <div class="card">
+    <div class="card-body">
+
+      <button
+      onclick="nuevaOrden()"
+      class="btn-modern btn-main mb-3">
+      Prueba Manual de Orden
+      </button>
+
+      <div class="alert alert-info">
+        Todavía no hay órdenes de servicio registradas.
+      </div>
+
+    </div>
+  </div>
 
 </div>
 
@@ -1097,10 +1125,218 @@ class="btn-modern btn-main">
 Imprimir
 </button>
 
+<button
+id="btnOrdenServicio"
+onclick="crearOrdenDesdeTicket()"
+class="btn-modern btn-ok">
+Generar Orden de Servicio
+</button>
+
 </div>
 
 </div>
 </div>
+</div>
+
+<!-- MODAL ORDEN DE SERVICIO -->
+<div class="modal fade" id="modalOrden">
+
+<div class="modal-dialog modal-lg">
+
+<div class="modal-content p-3">
+
+<h4>Nueva Orden de Servicio</h4>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <label>N° Orden</label>
+    <input
+    id="osNumero"
+    class="form-control mb-2"
+    readonly>
+  </div>
+
+  <div class="col-md-6">
+    <label>N° Caso</label>
+    <input
+    id="osCaso"
+    class="form-control mb-2"
+    readonly>
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <label>Fecha</label>
+    <input
+    id="osFecha"
+    type="date"
+    class="form-control mb-2">
+  </div>
+
+  <div class="col-md-6">
+    <label>Cliente</label>
+    <input
+    id="osCliente"
+    class="form-control mb-2">
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <label>Producto</label>
+    <input
+    id="osProducto"
+    class="form-control mb-2">
+  </div>
+
+  <div class="col-md-6">
+    <label>Marca</label>
+    <input
+    id="osMarca"
+    class="form-control mb-2">
+  </div>
+
+</div>
+
+<div class="form-group">
+
+  <label>Accesorios recibidos</label>
+
+  <textarea
+  id="osAccesorios"
+  class="form-control"
+  rows="3"
+  placeholder="Ej: Control remoto, cable alimentación, manual, soporte de pared, etc."></textarea>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <label>Modelo</label>
+    <input
+    id="osModelo"
+    class="form-control mb-2">
+  </div>
+
+  <div class="col-md-6">
+    <label>N° de Serie</label>
+    <input
+    id="osSerie"
+    class="form-control mb-2">
+  </div>
+
+</div>
+
+<div class="form-group">
+
+  <label>Estado físico del equipo al ingresar</label>
+
+  <textarea
+  id="osEstadoFisico"
+  class="form-control"
+  rows="3"
+  placeholder="Ej: Rayón en tapa superior, golpe lateral derecho, faltante de perilla, equipo sucio, etc."></textarea>
+
+</div>
+
+<div class="form-group">
+
+  <label>Falla reportada por el cliente</label>
+
+  <textarea
+  id="osFalla"
+  class="form-control"
+  rows="4"
+  placeholder="Describa la falla informada por el cliente"></textarea>
+
+</div>
+
+<div class="form-group">
+
+  <label>Observaciones</label>
+
+  <textarea
+  id="osObservaciones"
+  class="form-control"
+  rows="3"
+  placeholder="Observaciones adicionales"></textarea>
+
+</div>
+
+<hr>
+
+<div class="row mt-4">
+
+  <div class="col-md-6 text-center">
+
+    <br><br><br>
+
+    __________________________
+
+    <div>
+      Firma del Cliente
+    </div>
+
+  </div>
+
+  <div class="col-md-6 text-center">
+
+    <br><br><br>
+
+    __________________________
+
+    <div>
+      Firma y Sello de Service
+    </div>
+
+  </div>
+
+</div>
+
+<div class="alert alert-light mt-4" style="font-size:12px;">
+
+  <b>Importante:</b>
+
+  La empresa no se responsabiliza por datos, programas,
+  configuraciones, contraseñas o cualquier tipo de información
+  almacenada en el equipo ingresado.
+
+  <br><br>
+
+  Asimismo, cualquier accesorio, componente o elemento entregado
+  junto al equipo y que no se encuentre detallado en la presente
+  Orden de Servicio, no será considerado como recibido por la empresa,
+  quedando ésta exenta de responsabilidad ante reclamos posteriores.
+
+</div>
+
+<div class="text-right mt-3">
+
+  <button
+  type="button"
+  class="btn-modern btn-danger"
+  data-dismiss="modal">
+  Cancelar
+  </button>
+
+  <button
+  type="button"
+  onclick="guardarOrdenServicio()"
+  class="btn-modern btn-ok">
+  Guardar Orden
+  </button>
+
+</div>
+
+</div>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -1279,6 +1515,8 @@ let paginaDistribuidora = 1;
 let autoRefresh = null;
 let ticketDetalleId = null;
 
+let ordenActualId = null;
+
 function login(){
 
   const u = document.getElementById('user').value;
@@ -1367,27 +1605,29 @@ login();
 
 function vista(v){
 
-  const titulos = {
-    panel:'Panel Principal',
-    diario:'Pago Diario',
-    distribuidora:'Distribuidora',
-    historial:'Historial',
-    usuarios:'Usuarios',
-    logs:'Logs',
-    contactos:'Contactos'
-  };
+const titulos = {
+  panel:'Panel Principal',
+  diario:'Pago Diario',
+  distribuidora:'Distribuidora',
+  historial:'Historial',
+  usuarios:'Usuarios',
+  logs:'Logs',
+  contactos:'Contactos',
+  ordenes:'Órdenes de Servicio'
+};
 
   document.getElementById('tituloVista').innerText = titulos[v];
 
-  const vistas = [
-    'panel',
-    'diario',
-    'distribuidora',
-    'historial',
-    'usuarios',
-    'logs',
-    'contactos'
-  ];
+const vistas = [
+  'panel',
+  'diario',
+  'distribuidora',
+  'historial',
+  'usuarios',
+  'logs',
+  'contactos',
+  'ordenes'
+];
 
   vistas.forEach(id => {
     const el = document.getElementById(id);
@@ -1411,6 +1651,71 @@ function vista(v){
 
   if(v === 'diario') paginaDiario = 1;
   if(v === 'distribuidora') paginaDistribuidora = 1;
+}
+
+
+function nuevaOrden(){
+
+  ordenActualId = null;
+
+  document.getElementById('osNumero').value = 'OS-PENDIENTE';
+
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('osFecha').value = hoy;
+
+  $('#modalOrden').modal('show');
+
+}
+
+function crearOrdenDesdeTicket(){
+
+  document.getElementById('osNumero').value = 'OS-PENDIENTE';
+
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('osFecha').value = hoy;
+
+  document.getElementById('osCaso').value =
+    document.getElementById('dCaso').innerText;
+
+  document.getElementById('osCliente').value =
+    document.getElementById('dCliente').innerText;
+
+  document.getElementById('osProducto').value =
+    document.getElementById('dTitulo').innerText;
+
+  document.getElementById('osMarca').value =
+    document.getElementById('dMarca').innerText;
+
+  $('#modalOrden').modal('show');
+
+}
+
+function guardarOrdenServicio(){
+
+  const orden = {
+
+    numero: document.getElementById('osNumero').value,
+    caso: document.getElementById('osCaso').value,
+    fecha: document.getElementById('osFecha').value,
+
+    cliente: document.getElementById('osCliente').value,
+    producto: document.getElementById('osProducto').value,
+    marca: document.getElementById('osMarca').value,
+
+    accesorios: document.getElementById('osAccesorios').value,
+    modelo: document.getElementById('osModelo').value,
+    serie: document.getElementById('osSerie').value,
+
+    estadoFisico: document.getElementById('osEstadoFisico').value,
+    falla: document.getElementById('osFalla').value,
+    observaciones: document.getElementById('osObservaciones').value
+
+  };
+
+  console.log("ORDEN:", orden);
+
+  alert("Orden lista para guardar");
+
 }
 
 
