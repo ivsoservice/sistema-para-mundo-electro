@@ -11,6 +11,7 @@ const path = require('path');
 const helmet = require('helmet');
 
 const ticketsRoutes = require('./routes/tickets.routes');
+const ordenesRoutes = require('./routes/ordenes.routes');
 
 
 const app = express();
@@ -73,6 +74,12 @@ app.use(
 '/api/tickets',
 ticketsRoutes(db, auth, logAction)
 );
+
+app.use(
+  '/api/ordenes-servicio',
+  ordenesRoutes(db, auth, logAction)
+);
+
 app.use(
   '/api/users',
   usersRoutes(db, auth, logAction)
@@ -206,6 +213,15 @@ db.run(`
     VALUES (1,'admin',?, 'admin')
   `,[hash]);
 
+});
+
+db.run(`
+  ALTER TABLE ordenes_servicio
+  ADD COLUMN telefono TEXT
+`, (err) => {
+  if (err) {
+    console.log("telefono ya existe o no se pudo agregar:", err.message);
+  }
 });
 
 

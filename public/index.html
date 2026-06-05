@@ -870,9 +870,30 @@ Guardar
       Prueba Manual de Orden
       </button>
 
-      <div class="alert alert-info">
-        Todavía no hay órdenes de servicio registradas.
-      </div>
+<table class="table table-bordered" id="tablaOrdenes">
+
+  <thead>
+
+    <tr>
+      <th>N° Orden</th>
+      <th>N° Caso</th>
+      <th>Cliente</th>
+      <th>Fecha</th>
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr>
+      <td colspan="4" class="text-center">
+        No hay órdenes cargadas
+      </td>
+    </tr>
+
+  </tbody>
+
+</table>
 
     </div>
   </div>
@@ -1232,6 +1253,13 @@ Generar Orden de Servicio
     class="form-control mb-2">
   </div>
 
+<div class="col-md-6">
+  <label>Teléfono</label>
+  <input
+  id="osTelefono"
+  class="form-control mb-2">
+</div>
+
 </div>
 
 <div class="form-group">
@@ -1331,6 +1359,13 @@ Generar Orden de Servicio
   onclick="guardarOrdenServicio()"
   class="btn-modern btn-ok">
   Guardar Orden
+  </button>
+
+  <button
+  type="button"
+  onclick="imprimirOrden()"
+  class="btn-modern btn-main">
+  Imprimir
   </button>
 
 </div>
@@ -1690,6 +1725,356 @@ function crearOrdenDesdeTicket(){
 
 }
 
+async function cargarOrdenes(){
+
+  try{
+
+    const res = await fetch('/api/ordenes-servicio');
+
+    const data = await res.json();
+
+    const tbody =
+    document.querySelector('#tablaOrdenes tbody');
+
+    tbody.innerHTML = '';
+
+    data.forEach(o => {
+
+tbody.innerHTML += `
+  <tr onclick="verOrden(${o.id})" style="cursor:pointer;">
+    <td>${o.numeroOrden}</td>
+    <td>${o.numeroCaso}</td>
+    <td>${o.cliente}</td>
+    <td>${o.fecha}</td>
+  </tr>
+`;
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+async function verOrden(id){
+
+  try{
+
+    const res = await fetch(
+      '/api/ordenes-servicio/' + id
+    );
+
+    const orden = await res.json();
+
+    document.getElementById('osNumero').value =
+      orden.numeroOrden || '';
+
+    document.getElementById('osCaso').value =
+      orden.numeroCaso || '';
+
+    document.getElementById('osFecha').value =
+      orden.fecha || '';
+
+    document.getElementById('osCliente').value =
+      orden.cliente || '';
+
+    document.getElementById('osTelefono').value =
+      orden.telefono || '';
+
+    document.getElementById('osProducto').value =
+      orden.producto || '';
+
+    document.getElementById('osMarca').value =
+      orden.marca || '';
+
+    document.getElementById('osAccesorios').value =
+      orden.accesorios || '';
+
+    document.getElementById('osModelo').value =
+      orden.modelo || '';
+
+    document.getElementById('osSerie').value =
+      orden.serie || '';
+
+    document.getElementById('osEstadoFisico').value =
+      orden.estadoFisico || '';
+
+    document.getElementById('osFalla').value =
+      orden.falla || '';
+
+    document.getElementById('osObservaciones').value =
+      orden.observaciones || '';
+
+    $('#modalOrden').modal('show');
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+function imprimirOrden(){
+
+  const contenido = `
+    <html>
+    <head>
+      <title>Orden de Servicio</title>
+      <style>
+
+        body{
+  font-family: Arial, sans-serif;
+  padding:20px;
+  font-size:13px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+td{
+  border:1px solid #444;
+  padding:8px;
+  vertical-align:top;
+}
+
+.seccion{
+  background:#d9d9d9;
+  font-weight:bold;
+  text-align:center;
+  font-size:14px;
+}
+
+.etiqueta{
+  width:30%;
+  font-weight:bold;
+  background:#f5f5f5;
+}
+
+      </style>
+    </head>
+
+    <body>
+
+    <div id="original">
+
+      <div style="margin-bottom:25px;">
+
+  <div style="text-align:center;">
+    <img
+      src="/img/logo.png"
+      style="
+        width:140px;
+        margin-bottom:10px;
+      ">
+  </div>
+
+  <div style="
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+  ">
+    MUNDO ELECTRO
+  </div>
+
+  <div style="
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    margin-top:5px;
+  ">
+    ORDEN DE SERVICIO
+  </div>
+
+  <hr style="margin:15px 0;">
+
+  <table style="
+    width:100%;
+    border:none;
+    margin-bottom:10px;
+  ">
+    <tr>
+
+      <td style="
+        border:none;
+        width:40%;
+        font-size:16px;
+        font-weight:bold;
+        vertical-align:top;
+      ">
+        ORIGINAL
+      </td>
+
+      <td style="
+        border:none;
+        width:60%;
+        text-align:right;
+        font-size:13px;
+        line-height:1.6;
+      ">
+        <div><b>Razón Social:</b> MUNDO ELECTRO MG S.A.S</div>
+        <div><b>CUIT:</b> 30-71645082-8</div>
+        <div><b>Email:</b> service.mundo.electro@gmail.com</div>
+        <div><b>WhatsApp:</b> 1136861103 / 1171982245</div>
+      </td>
+
+    </tr>
+  </table>
+
+</div>
+      <table>
+
+        <tr>
+  <td colspan="2" class="seccion">
+    DATOS DE RECEPCIÓN
+  </td>
+</tr>
+
+
+        <tr>
+          <td class="etiqueta">N° Orden</td>
+          <td>${document.getElementById('osNumero').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">N° Caso</td>
+          <td>${document.getElementById('osCaso').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Fecha</td>
+          <td>${document.getElementById('osFecha').value}</td>
+        </tr>
+
+        <tr>
+  <td colspan="2" class="seccion">
+    DATOS DEL CLIENTE
+  </td>
+</tr>
+        
+
+        <tr>
+          <td class="etiqueta">Cliente</td>
+          <td>${document.getElementById('osCliente').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Telefono</td>
+          <td>${document.getElementById('osTelefono').value}</td>
+        </tr>
+
+        <tr>
+  <td colspan="2" class="seccion">
+    DATOS DEL EQUIPO
+  </td>
+</tr>
+
+        <tr>
+          <td class="etiqueta">Producto</td>
+          <td>${document.getElementById('osProducto').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Marca</td>
+          <td>${document.getElementById('osMarca').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Accesorios</td>
+          <td>${document.getElementById('osAccesorios').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Modelo</td>
+          <td>${document.getElementById('osModelo').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Serie</td>
+          <td>${document.getElementById('osSerie').value}</td>
+        </tr>
+
+        <tr>
+  <td colspan="2" class="seccion">
+    INFORMACIÓN DEL SERVICIO
+  </td>
+</tr>
+
+        <tr>
+          <td class="etiqueta">Estado Fisico</td>
+          <td>${document.getElementById('osEstadoFisico').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Falla</td>
+          <td>${document.getElementById('osFalla').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Observaciones</td>
+          <td>${document.getElementById('osObservaciones').value}</td>
+        </tr>
+
+      </table>
+
+<br><br><br>
+
+<table style="width:100%; border:none;">
+
+  <tr>
+
+    <td style="
+      border:none;
+      text-align:center;
+      width:50%;
+    ">
+      ___________________________
+      <br>
+      Firma del Cliente
+    </td>
+
+    <td style="
+      border:none;
+      text-align:center;
+      width:50%;
+    ">
+      ___________________________
+      <br>
+      Servicio Técnico
+    </td>
+
+  </tr>
+
+</table>
+
+</div>
+
+
+
+    </body>
+    </html>
+  `;
+
+  const ventana = window.open('', '_blank');
+
+ventana.document.write(contenido);
+
+ventana.document.close();
+
+setTimeout(() => {
+
+  ventana.print();
+
+}, 500);
+
+}
+
+cargarOrdenes();
+
 function guardarOrdenServicio(){
 
   const orden = {
@@ -1699,6 +2084,7 @@ function guardarOrdenServicio(){
     fecha: document.getElementById('osFecha').value,
 
     cliente: document.getElementById('osCliente').value,
+    telefono: document.getElementById('osTelefono').value,
     producto: document.getElementById('osProducto').value,
     marca: document.getElementById('osMarca').value,
 
@@ -1712,9 +2098,29 @@ function guardarOrdenServicio(){
 
   };
 
-  console.log("ORDEN:", orden);
+fetch('/api/ordenes-servicio', {
+  credentials: 'include',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(orden)
+})
+.then(r => r.json())
+.then(data => {
 
-  alert("Orden lista para guardar");
+  console.log(data);
+
+  alert('Orden enviada correctamente');
+
+})
+.catch(err => {
+
+  console.log(err);
+
+  alert('Error enviando orden');
+
+});
 
 }
 
