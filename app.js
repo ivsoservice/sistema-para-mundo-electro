@@ -225,6 +225,34 @@ db.run(`
 });
 
 
+db.run(`
+  ALTER TABLE ordenes_servicio
+  ADD COLUMN direccion TEXT
+`, (err) => {
+  if (err) {
+    console.log("direccion ya existe o no se pudo agregar:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE ordenes_servicio
+  ADD COLUMN localidad TEXT
+`, (err) => {
+  if (err) {
+    console.log("localidad ya existe o no se pudo agregar:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE ordenes_servicio
+  ADD COLUMN entreCalles TEXT
+`, (err) => {
+  if (err) {
+    console.log("entreCalles ya existe o no se pudo agregar:", err.message);
+  }
+});
+
+
 // LOGIN
 app.post('/api/login',(req,res)=>{
 

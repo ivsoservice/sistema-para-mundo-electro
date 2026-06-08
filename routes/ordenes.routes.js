@@ -30,23 +30,25 @@ db.get(
 db.run(`
   INSERT INTO ordenes_servicio
   (
-    numeroOrden,
-    numeroCaso,
-    fecha,
-    cliente,
-    telefono,
-    producto,
-    marca,
-    accesorios,
-    modelo,
-    serie,
-    estadoFisico,
-    falla,
-    observaciones,
-    fechaCreacion,
-    usuarioCreacion
+numeroOrden,
+numeroCaso,
+fecha,
+cliente,
+telefono,
+direccion,
+localidad,
+entreCalles,
+producto,
+marca,
+accesorios,
+modelo,
+serie,
+falla,
+observaciones,
+fechaCreacion,
+usuarioCreacion
   )
-  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `,
 [
   numeroOrden,
@@ -54,12 +56,14 @@ db.run(`
   req.body.fecha,
   req.body.cliente,
   req.body.telefono,
+  req.body.direccion,
+  req.body.localidad,
+  req.body.entreCalles,
   req.body.producto,
   req.body.marca,
   req.body.accesorios,
   req.body.modelo,
   req.body.serie,
-  req.body.estadoFisico,
   req.body.falla,
   req.body.observaciones,
   new Date().toISOString(),

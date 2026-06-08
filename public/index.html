@@ -1260,17 +1260,32 @@ Generar Orden de Servicio
   class="form-control mb-2">
 </div>
 
+<div class="col-md-6">
+  <label>Dirección</label>
+  <input
+  id="osDireccion"
+  class="form-control mb-2">
+</div>
+
+<div class="col-md-6">
+  <label>Localidad</label>
+  <input
+  id="osLocalidad"
+  class="form-control mb-2">
+</div>
+
+<div class="col-md-6">
+  <label>Entre Calles</label>
+  <input
+  id="osEntreCalles"
+  class="form-control mb-2">
+</div>
+
 </div>
 
 <div class="form-group">
 
-  <label>Estado físico del equipo al ingresar</label>
 
-  <textarea
-  id="osEstadoFisico"
-  class="form-control"
-  rows="3"
-  placeholder="Ej: Rayón en tapa superior, golpe lateral derecho, faltante de perilla, equipo sucio, etc."></textarea>
 
 </div>
 
@@ -1693,7 +1708,7 @@ function nuevaOrden(){
 
   ordenActualId = null;
 
-  document.getElementById('osNumero').value = 'OS-PENDIENTE';
+  document.getElementById('osNumero').value = '';
 
   const hoy = new Date().toISOString().split('T')[0];
   document.getElementById('osFecha').value = hoy;
@@ -1704,7 +1719,7 @@ function nuevaOrden(){
 
 function crearOrdenDesdeTicket(){
 
-  document.getElementById('osNumero').value = 'OS-PENDIENTE';
+  document.getElementById('osNumero').value = '';
 
   const hoy = new Date().toISOString().split('T')[0];
   document.getElementById('osFecha').value = hoy;
@@ -1783,6 +1798,15 @@ async function verOrden(id){
     document.getElementById('osTelefono').value =
       orden.telefono || '';
 
+    document.getElementById('osDireccion').value =
+      orden.direccion || '';
+
+    document.getElementById('osLocalidad').value =
+      orden.localidad || '';
+
+    document.getElementById('osEntreCalles').value =
+      orden.entreCalles || '';
+
     document.getElementById('osProducto').value =
       orden.producto || '';
 
@@ -1798,8 +1822,6 @@ async function verOrden(id){
     document.getElementById('osSerie').value =
       orden.serie || '';
 
-    document.getElementById('osEstadoFisico').value =
-      orden.estadoFisico || '';
 
     document.getElementById('osFalla').value =
       orden.falla || '';
@@ -1837,16 +1859,19 @@ table{
 }
 
 td{
-  border:1px solid #444;
+  border:1px solid #999;
   padding:8px;
   vertical-align:top;
 }
 
 .seccion{
-  background:#d9d9d9;
   font-weight:bold;
   text-align:center;
   font-size:14px;
+  border-top:2px solid #000;
+  border-bottom:2px solid #000;
+  background:none;
+  letter-spacing:1px;
 }
 
 .etiqueta{
@@ -1862,68 +1887,76 @@ td{
 
     <div id="original">
 
-      <div style="margin-bottom:25px;">
-
-  <div style="text-align:center;">
-    <img
-      src="/img/logo.png"
-      style="
-        width:140px;
-        margin-bottom:10px;
-      ">
-  </div>
-
-  <div style="
-    text-align:center;
-    font-size:28px;
-    font-weight:bold;
-  ">
-    MUNDO ELECTRO
-  </div>
-
-  <div style="
-    text-align:center;
-    font-size:18px;
-    font-weight:bold;
-    margin-top:5px;
-  ">
-    ORDEN DE SERVICIO
-  </div>
-
-  <hr style="margin:15px 0;">
+      <div style="margin-bottom:15px;">
 
   <table style="
     width:100%;
     border:none;
     margin-bottom:10px;
   ">
+
     <tr>
 
       <td style="
         border:none;
-        width:40%;
-        font-size:16px;
-        font-weight:bold;
-        vertical-align:top;
+        width:20%;
+        text-align:left;
+        vertical-align:middle;
       ">
-        ORIGINAL
+        <img
+          src="/img/logo.png"
+          style="
+            width:110px;
+          ">
       </td>
 
       <td style="
         border:none;
-        width:60%;
-        text-align:right;
-        font-size:13px;
-        line-height:1.6;
+        width:80%;
+        vertical-align:middle;
       ">
-        <div><b>Razón Social:</b> MUNDO ELECTRO MG S.A.S</div>
-        <div><b>CUIT:</b> 30-71645082-8</div>
-        <div><b>Email:</b> service.mundo.electro@gmail.com</div>
-        <div><b>WhatsApp:</b> 1136861103 / 1171982245</div>
+
+        <div style="
+          font-size:28px;
+          font-weight:bold;
+        ">
+          MUNDO ELECTRO
+        </div>
+
+        <div style="
+          font-size:18px;
+          font-weight:bold;
+        ">
+          ORDEN DE SERVICIO
+        </div>
+
+        <div style="
+          margin-top:10px;
+          font-size:13px;
+        ">
+          <b>Razón Social:</b> MUNDO ELECTRO MG S.A.S
+          &nbsp;&nbsp;&nbsp;
+          <b>CUIT:</b> 30-71645082-8
+        </div>
+
+        <div style="
+          font-size:13px;
+          margin-top:3px;
+        ">
+          <b>Email:</b> service.mundo.electro@gmail.com
+          &nbsp;&nbsp;&nbsp;
+          <b>WhatsApp:</b> 1136861103 / 1171982245
+        </div>
+
       </td>
 
     </tr>
+
   </table>
+
+  <hr style="margin:10px 0;">
+
+</div>
 
 </div>
       <table>
@@ -1936,19 +1969,50 @@ td{
 
 
         <tr>
-          <td class="etiqueta">N° Orden</td>
-          <td>${document.getElementById('osNumero').value}</td>
-        </tr>
 
-        <tr>
-          <td class="etiqueta">N° Caso</td>
-          <td>${document.getElementById('osCaso').value}</td>
-        </tr>
+  <td colspan="2" style="padding:0;">
 
-        <tr>
-          <td class="etiqueta">Fecha</td>
-          <td>${document.getElementById('osFecha').value}</td>
-        </tr>
+    <table style="width:100%; border-collapse:collapse;">
+
+      <tr>
+
+        <td style="
+          width:33%;
+          text-align:center;
+          font-weight:bold;
+        ">
+          N° ORDEN
+          <br><br>
+          ${document.getElementById('osNumero').value}
+        </td>
+
+        <td style="
+          width:33%;
+          text-align:center;
+          font-weight:bold;
+        ">
+          N° CASO
+          <br><br>
+          ${document.getElementById('osCaso').value}
+        </td>
+
+        <td style="
+          width:34%;
+          text-align:center;
+          font-weight:bold;
+        ">
+          FECHA
+          <br><br>
+          ${document.getElementById('osFecha').value}
+        </td>
+
+      </tr>
+
+    </table>
+
+  </td>
+
+</tr>
 
         <tr>
   <td colspan="2" class="seccion">
@@ -1965,6 +2029,21 @@ td{
         <tr>
           <td class="etiqueta">Telefono</td>
           <td>${document.getElementById('osTelefono').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Dirección</td>
+          <td>${document.getElementById('osDireccion').value}</td>
+         </tr>
+
+        <tr>
+          <td class="etiqueta">Localidad</td>
+          <td>${document.getElementById('osLocalidad').value}</td>
+        </tr>
+
+        <tr>
+          <td class="etiqueta">Entre Calles</td>
+          <td>${document.getElementById('osEntreCalles').value}</td>
         </tr>
 
         <tr>
@@ -2004,24 +2083,33 @@ td{
   </td>
 </tr>
 
-        <tr>
-          <td class="etiqueta">Estado Fisico</td>
-          <td>${document.getElementById('osEstadoFisico').value}</td>
-        </tr>
+<tr>
+  <td colspan="2" style="font-weight:bold;">
+    FALLA REPORTADA
+  </td>
+</tr>
 
-        <tr>
-          <td class="etiqueta">Falla</td>
-          <td>${document.getElementById('osFalla').value}</td>
-        </tr>
+<tr>
+  <td colspan="2" style="height:40px;">
+    ${document.getElementById('osFalla').value}
+  </td>
+</tr>
 
-        <tr>
-          <td class="etiqueta">Observaciones</td>
-          <td>${document.getElementById('osObservaciones').value}</td>
-        </tr>
+<tr>
+  <td colspan="2" style="font-weight:bold;">
+    OBSERVACIONES
+  </td>
+</tr>
+
+<tr>
+  <td colspan="2" style="height:40px;">
+    ${document.getElementById('osObservaciones').value}
+  </td>
+</tr>
 
       </table>
 
-<br><br><br>
+<br>
 
 <table style="width:100%; border:none;">
 
@@ -2034,7 +2122,7 @@ td{
     ">
       ___________________________
       <br>
-      Firma del Cliente
+      Firma y Aclaracion del Cliente
     </td>
 
     <td style="
@@ -2044,12 +2132,33 @@ td{
     ">
       ___________________________
       <br>
-      Servicio Técnico
+      Firma y Sello del Asistencia Tecnica
     </td>
 
   </tr>
 
 </table>
+
+<div style="
+  font-size:11px;
+  margin-top:10px;
+  line-height:1.5;
+">
+
+  <b>Horario de Atención:</b>
+  Lunes a Viernes de 09:00 a 17:00 hs.
+
+  <br><br>
+
+  <b>Condiciones de Recepción:</b>
+  El cliente declara haber realizado el resguardo de toda la información importante contenida en el equipo antes de su ingreso al servicio técnico. MUNDO ELECTRO no se responsabiliza por la pérdida total o parcial de datos almacenados en teléfonos celulares, tablets, notebooks, computadoras, discos, memorias o cualquier otro dispositivo de almacenamiento. Asimismo, la empresa no se responsabiliza por la pérdida, extravío o faltante de accesorios, componentes o elementos que no hayan sido expresamente detallados en la presente Orden de Servicio al momento de la recepción del equipo.
+
+</div>
+
+</div>
+
+</body>
+</html>
 
 </div>
 
@@ -2085,6 +2194,9 @@ function guardarOrdenServicio(){
 
     cliente: document.getElementById('osCliente').value,
     telefono: document.getElementById('osTelefono').value,
+    direccion: document.getElementById('osDireccion').value,
+    localidad: document.getElementById('osLocalidad').value,
+    entreCalles: document.getElementById('osEntreCalles').value,
     producto: document.getElementById('osProducto').value,
     marca: document.getElementById('osMarca').value,
 
@@ -2092,7 +2204,7 @@ function guardarOrdenServicio(){
     modelo: document.getElementById('osModelo').value,
     serie: document.getElementById('osSerie').value,
 
-    estadoFisico: document.getElementById('osEstadoFisico').value,
+
     falla: document.getElementById('osFalla').value,
     observaciones: document.getElementById('osObservaciones').value
 
