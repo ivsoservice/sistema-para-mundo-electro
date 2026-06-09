@@ -867,7 +867,7 @@ Guardar
       <button
       onclick="nuevaOrden()"
       class="btn-modern btn-main mb-3">
-      Prueba Manual de Orden
+      Generar Orden Manual
       </button>
 
 <table class="table table-bordered" id="tablaOrdenes">
@@ -1291,13 +1291,33 @@ Generar Orden de Servicio
 
 <div class="form-group">
 
-  <label>Falla reportada por el cliente</label>
+<div class="row">
 
-  <textarea
-  id="osFalla"
-  class="form-control"
-  rows="4"
-  placeholder="Describa la falla informada por el cliente"></textarea>
+  <div class="col-md-6">
+
+    <label>Falla reportada por el cliente</label>
+
+    <textarea
+    id="osFalla"
+    class="form-control"
+    rows="4"
+    placeholder="Describa la falla informada por el cliente"></textarea>
+
+  </div>
+
+  <div class="col-md-6">
+
+    <label>Tarea a realizar</label>
+
+    <textarea
+    id="osTarea"
+    class="form-control"
+    rows="4"
+    placeholder="Indique qué debe realizar el chofer"></textarea>
+
+  </div>
+
+</div>
 
 </div>
 
@@ -1378,7 +1398,7 @@ Generar Orden de Servicio
 
   <button
   type="button"
-  onclick="imprimirOrden()"
+  onclick="validarImpresionOrden()"
   class="btn-modern btn-main">
   Imprimir
   </button>
@@ -1625,20 +1645,21 @@ if(window.userRole !== 'admin'){
 
 }
 
-    // ✔ cargar sistema
+// ✔ cargar sistema
+cargar();
+cargarOrdenes();
+
+// auto refresh
+autoRefresh = setInterval(() => {
+
+  if(
+    tipoActual === 'diario' ||
+    tipoActual === 'distribuidora'
+  ){
     cargar();
+  }
 
-    // auto refresh
-    autoRefresh = setInterval(() => {
-
-      if(
-        tipoActual === 'diario' ||
-        tipoActual === 'distribuidora'
-      ){
-        cargar();
-      }
-
-    }, 3000);
+}, 3000);
 
   });
 
@@ -1709,9 +1730,27 @@ function nuevaOrden(){
   ordenActualId = null;
 
   document.getElementById('osNumero').value = '';
+  document.getElementById('osCaso').value = '';
 
   const hoy = new Date().toISOString().split('T')[0];
   document.getElementById('osFecha').value = hoy;
+
+  document.getElementById('osCliente').value = '';
+  document.getElementById('osTelefono').value = '';
+
+  document.getElementById('osDireccion').value = '';
+  document.getElementById('osLocalidad').value = '';
+  document.getElementById('osEntreCalles').value = '';
+
+  document.getElementById('osProducto').value = '';
+  document.getElementById('osMarca').value = '';
+  document.getElementById('osAccesorios').value = '';
+  document.getElementById('osModelo').value = '';
+  document.getElementById('osSerie').value = '';
+
+  document.getElementById('osFalla').value = '';
+  document.getElementById('osTarea').value = '';
+  document.getElementById('osObservaciones').value = '';
 
   $('#modalOrden').modal('show');
 
@@ -1825,6 +1864,9 @@ async function verOrden(id){
 
     document.getElementById('osFalla').value =
       orden.falla || '';
+      
+    document.getElementById('osTarea').value =
+      orden.tarea || '',
 
     document.getElementById('osObservaciones').value =
       orden.observaciones || '';
@@ -1836,6 +1878,25 @@ async function verOrden(id){
     console.log(err);
 
   }
+
+}
+
+function validarImpresionOrden(){
+
+  if(!ordenActualId){
+
+    const guardarAhora = confirm(
+      'La orden todavía no fue guardada.\n\nDebe guardar la orden para generar el número de Orden de Servicio antes de imprimir.\n\n¿Desea guardar ahora?'
+    );
+
+    if(guardarAhora){
+      guardarOrdenServicio();
+    }
+
+    return;
+  }
+
+  imprimirOrden();
 
 }
 
@@ -2084,15 +2145,35 @@ td{
 </tr>
 
 <tr>
-  <td colspan="2" style="font-weight:bold;">
+
+  <td style="
+    width:50%;
+    font-weight:bold;
+    text-align:center;
+  ">
     FALLA REPORTADA
   </td>
+
+  <td style="
+    width:50%;
+    font-weight:bold;
+    text-align:center;
+  ">
+    TAREA A REALIZAR
+  </td>
+
 </tr>
 
 <tr>
-  <td colspan="2" style="height:40px;">
+
+  <td style="height:70px;">
     ${document.getElementById('osFalla').value}
   </td>
+
+  <td style="height:70px;">
+    ${document.getElementById('osTarea').value}
+  </td>
+
 </tr>
 
 <tr>
@@ -2182,7 +2263,6 @@ setTimeout(() => {
 
 }
 
-cargarOrdenes();
 
 function guardarOrdenServicio(){
 
@@ -2206,6 +2286,7 @@ function guardarOrdenServicio(){
 
 
     falla: document.getElementById('osFalla').value,
+    tarea: document.getElementById('osTarea').value,
     observaciones: document.getElementById('osObservaciones').value
 
   };
@@ -2223,7 +2304,14 @@ fetch('/api/ordenes-servicio', {
 
   console.log(data);
 
+  document.getElementById('osNumero'). value =
+    data.numeroOrden;
+
+  ordenActualId = data.id;
+
   alert('Orden enviada correctamente');
+
+  cargarOrdenes();
 
 })
 .catch(err => {

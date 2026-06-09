@@ -7,6 +7,8 @@ module.exports = (db, auth, logAction) => {
   const router = express.Router();
 
   router.post('/', auth, async (req, res) => {
+  
+    console.log("BODY ORDEN:", req.body);
 
     try {
 
@@ -44,11 +46,12 @@ accesorios,
 modelo,
 serie,
 falla,
+tarea,
 observaciones,
 fechaCreacion,
 usuarioCreacion
   )
-  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `,
 [
   numeroOrden,
@@ -65,9 +68,10 @@ usuarioCreacion
   req.body.modelo,
   req.body.serie,
   req.body.falla,
+  req.body.tarea,
   req.body.observaciones,
   new Date().toISOString(),
-  req.session.user.username
+  (req.session?.user?.username || 'sistema')
 ],
 function(err){
 
@@ -81,7 +85,8 @@ function(err){
 
   res.json({
     ok:true,
-    id:this.lastID
+    id:this.lastID,
+    numeroOrden: numeroOrden
   });
 
 });
