@@ -119,24 +119,32 @@ function crearTicket(d) {
     const prioridad = d.prioridad || 'baja';
 
     db.run(`
-  INSERT INTO tickets
-  (
-    numeroCaso,
-    titulo,
-    cliente,
-    tipo,
-    descripcion,
-    prioridad,
-    eliminado
-  )
-  VALUES (?, ?, ?, ?, ?, ?, 0)
+INSERT INTO tickets
+(
+  numeroCaso,
+  titulo,
+  cliente,
+  marca,
+  fechaIngreso,
+  tecnico,
+  tipo,
+  descripcion,
+  prioridad,
+  estado,
+  eliminado
+)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
 `, [
   numeroCaso,
   titulo,
   cliente,
+  d.marca || '',
+  d.fechaIngreso || '',
+  d.tecnico || '',
   tipo,
   descripcion,
-  prioridad
+  prioridad,
+  d.estado || 'Ingresado'
 ], function(err) {
 
   if (err) return reject(err);
@@ -182,24 +190,30 @@ function editarTicket(id, d) {
   return new Promise((resolve, reject) => {
 
     db.run(`
-      UPDATE tickets
-      SET
-      titulo=?,
-      cliente=?,
-      tipo=?,
-      descripcion=?,
-      prioridad=?,
-      estado=?
-      WHERE id=?
+UPDATE tickets
+SET
+titulo=?,
+cliente=?,
+marca=?,
+fechaIngreso=?,
+tecnico=?,
+tipo=?,
+descripcion=?,
+prioridad=?,
+estado=?
+WHERE id=?
     `, [
-      d.titulo || '',
-      d.cliente || '',
-      d.tipo || '',
-      d.descripcion || '',
-      d.prioridad || 'baja',
-      d.estado || 'Ingresado',
-      id
-    ], (err) => {
+  d.titulo || '',
+  d.cliente || '',
+  d.marca || '',
+  d.fechaIngreso || '',
+  d.tecnico || '',
+  d.tipo || '',
+  d.descripcion || '',
+  d.prioridad || 'baja',
+  d.estado || 'Ingresado',
+  id
+], (err) => {
 
       if (err) return reject(err);
 

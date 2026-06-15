@@ -22,6 +22,8 @@ module.exports = (db, auth, logAction) => {
   // =========================
   router.post('/', auth, async (req, res) => {
 
+    console.log("BODY RECIBIDO:", req.body);
+
     try {
 
       const ticketData = req.body;

@@ -635,7 +635,7 @@ Contactos
 
     <li class="nav-item d-none d-sm-inline-block">
       <span class="nav-link">
-        <b>Ivso Desk</b>
+        <b> Desk</b>
 <span style="font-size:12px;opacity:0.6;margin-left:6px;">
 Mundo Electro
       </span>
@@ -686,84 +686,10 @@ Mundo Electro
 Panel Principal
 </h3>
 
-<div class="row mb-3">
 
-<div class="col-md-3">
-  <div class="card-box bg-main">
-
-    <div class="d-flex justify-content-between align-items-center">
-
-      <div>
-        <h5>Ingresados</h5>
-        <h2 id="tIngresados">0</h2>
-      </div>
-
-      <i class="fa-solid fa-inbox"
-         style="font-size:42px;opacity:0.45;"></i>
-
-    </div>
-
-  </div>
-</div>
-
-<div class="col-md-3">
-  <div class="card-box bg-warn">
-
-    <div class="d-flex justify-content-between align-items-center">
-
-      <div>
-        <h5>En proceso</h5>
-        <h2 id="tProceso">0</h2>
-      </div>
-
-      <i class="fa-solid fa-gears"
-         style="font-size:42px;opacity:0.45;"></i>
-
-    </div>
-
-  </div>
-</div>
-
-<div class="col-md-3">
-  <div class="card-box bg-ok">
-
-    <div class="d-flex justify-content-between align-items-center">
-
-      <div>
-        <h5>Resueltos</h5>
-        <h2 id="tResueltos">0</h2>
-      </div>
-
-      <i class="fa-solid fa-circle-check"
-         style="font-size:42px;opacity:0.45;"></i>
-
-    </div>
-
-  </div>
-</div>
-
-<div class="col-md-3">
-  <div class="card-box bg-main">
-
-    <div class="d-flex justify-content-between align-items-center">
-
-      <div>
-        <h5>Eliminados</h5>
-        <h2 id="tEliminados">0</h2>
-      </div>
-
-      <i class="fa-solid fa-trash"
-         style="font-size:42px;opacity:0.45;"></i>
-
-    </div>
-
-  </div>
-</div>
-
-</div>
 
 <!-- KPI ROW -->
-<div class="row mb-3">
+<div id="kpiPanel" class="row mb-3">
 
   <div class="col-md-4">
     <div class="card-box kpi">
@@ -900,6 +826,81 @@ Guardar
 
 </div>
 
+<div class="row mb-3">
+
+<div class="col-md-3">
+  <div class="card-box bg-main">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div>
+        <h5>Ingresados</h5>
+        <h2 id="tIngresados">0</h2>
+      </div>
+
+      <i class="fa-solid fa-inbox"
+         style="font-size:42px;opacity:0.45;"></i>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="col-md-3">
+  <div class="card-box bg-warn">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div>
+        <h5>En proceso</h5>
+        <h2 id="tProceso">0</h2>
+      </div>
+
+      <i class="fa-solid fa-gears"
+         style="font-size:42px;opacity:0.45;"></i>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="col-md-3">
+  <div class="card-box bg-ok">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div>
+        <h5>Resueltos</h5>
+        <h2 id="tResueltos">0</h2>
+      </div>
+
+      <i class="fa-solid fa-circle-check"
+         style="font-size:42px;opacity:0.45;"></i>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="col-md-3">
+  <div class="card-box bg-main">
+
+    <div class="d-flex justify-content-between align-items-center">
+
+      <div>
+        <h5>Eliminados</h5>
+        <h2 id="tEliminados">0</h2>
+      </div>
+
+      <i class="fa-solid fa-trash"
+         style="font-size:42px;opacity:0.45;"></i>
+
+    </div>
+
+  </div>
+</div>
+
+</div>
 
 <!-- DIARIO -->
 <div id="diario" style="display:none;">
@@ -1057,9 +1058,9 @@ Exportar CSV
 
 <div class="text-center mt-4 mb-2 text-muted" style="font-size:13px;">
   <span style="border:1px solid #ccc;border-radius:50%;padding:2px 6px;">
-    ©
+    
   </span>
-  2026 <b>Ivso Desk</b> — Sistema de gestión de tickets para Mundo Electro
+  2026 <b>Desk</b> — Sistema de gestión de tickets para Mundo Electro
 </div>
 
 <!-- MODAL -->
@@ -1707,6 +1708,16 @@ const vistas = [
 
   const actual = document.getElementById(v.toLowerCase());
   if(actual) actual.style.display = 'block';
+
+  document.querySelectorAll('.card-box.bg-main, .card-box.bg-warn, .card-box.bg-ok')
+.forEach(el => {
+  el.style.display = (v === 'panel') ? '' : 'none';
+
+});
+
+
+document.getElementById('kpiPanel').style.display =
+  (v === 'panel') ? 'flex' : 'none';
 
   tipoActual = v;
 
@@ -2616,6 +2627,8 @@ function verDetalle(id){
 fetchAuth('/api/tickets/' + id)
 .then(r => r.json())
 .then(t => {
+
+  console.log("DETALLE:", t);
 
   ticketDetalleId = t.id;
 
