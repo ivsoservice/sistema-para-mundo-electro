@@ -1399,6 +1399,13 @@ Generar Orden de Servicio
 
   <button
   type="button"
+  onclick="eliminarOrdenServicio()"
+  class="btn-modern btn-danger">
+  Eliminar Orden
+  </button>
+
+  <button
+  type="button"
   onclick="validarImpresionOrden()"
   class="btn-modern btn-main">
   Imprimir
@@ -1769,7 +1776,18 @@ function nuevaOrden(){
 
 function crearOrdenDesdeTicket(){
 
+  // LIMPIAR TODO
   document.getElementById('osNumero').value = '';
+  document.getElementById('osTelefono').value = '';
+  document.getElementById('osDireccion').value = '';
+  document.getElementById('osLocalidad').value = '';
+  document.getElementById('osEntreCalles').value = '';
+  document.getElementById('osAccesorios').value = '';
+  document.getElementById('osModelo').value = '';
+  document.getElementById('osSerie').value = '';
+  document.getElementById('osFalla').value = '';
+  document.getElementById('osTarea').value = '';
+  document.getElementById('osObservaciones').value = '';
 
   const hoy = new Date().toISOString().split('T')[0];
   document.getElementById('osFecha').value = hoy;
@@ -1787,7 +1805,6 @@ function crearOrdenDesdeTicket(){
     document.getElementById('dMarca').innerText;
 
   $('#modalOrden').modal('show');
-
 }
 
 async function cargarOrdenes(){
@@ -1824,6 +1841,8 @@ tbody.innerHTML += `
 }
 
 async function verOrden(id){
+
+  ordenActualId = id;
 
   try{
 
@@ -2302,9 +2321,17 @@ function guardarOrdenServicio(){
 
   };
 
-fetch('/api/ordenes-servicio', {
+let url = '/api/ordenes-servicio';
+let method = 'POST';
+
+if(ordenActualId){
+  url = '/api/ordenes-servicio/' + ordenActualId;
+  method = 'PUT';
+}
+
+fetch(url, {
   credentials: 'include',
-  method: 'POST',
+  method: method,
   headers: {
     'Content-Type': 'application/json'
   },
@@ -2315,10 +2342,14 @@ fetch('/api/ordenes-servicio', {
 
   console.log(data);
 
-  document.getElementById('osNumero'). value =
+if(data.numeroOrden){
+  document.getElementById('osNumero').value =
     data.numeroOrden;
+}
 
+if(data.id){
   ordenActualId = data.id;
+}
 
   alert('Orden enviada correctamente');
 
@@ -2332,6 +2363,48 @@ fetch('/api/ordenes-servicio', {
   alert('Error enviando orden');
 
 });
+
+}
+
+function eliminarOrdenServicio(){
+
+  if(!ordenActualId){
+    alert('Primero abrí una orden guardada');
+    return;
+  }
+
+  if(!confirm('¿Eliminar esta Orden de Servicio?')){
+    return;
+  }
+
+  fetch('/api/ordenes-servicio/' + ordenActualId,{
+    credentials:'include',
+    method:'DELETE'
+  })
+  .then(r=>r.json())
+  .then(data=>{
+
+    if(!data.ok){
+      alert('Error eliminando');
+      return;
+    }
+
+    $('#modalOrden').modal('hide');
+
+    ordenActualId = null;
+
+    cargarOrdenes();
+
+    alert('Orden eliminada');
+
+  })
+  .catch(err=>{
+
+    console.log(err);
+
+    alert('Error eliminando');
+
+  });
 
 }
 

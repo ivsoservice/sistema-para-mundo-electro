@@ -83,6 +83,13 @@ function(err){
     });
   }
 
+  logAction(
+  req.session.user.username,
+  'CREATE_OS',
+  numeroOrden
+);
+
+
   res.json({
     ok:true,
     id:this.lastID,
@@ -129,6 +136,104 @@ router.get('/:id', auth, (req, res) => {
     res.json(row);
 
   });
+
+});
+
+router.put('/:id', auth, (req, res) => {
+
+  db.run(`
+    UPDATE ordenes_servicio
+    SET
+      fecha=?,
+      cliente=?,
+      telefono=?,
+      direccion=?,
+      localidad=?,
+      entreCalles=?,
+      producto=?,
+      marca=?,
+      accesorios=?,
+      modelo=?,
+      serie=?,
+      falla=?,
+      tarea=?,
+      observaciones=?
+    WHERE id=?
+  `,
+  [
+    req.body.fecha,
+    req.body.cliente,
+    req.body.telefono,
+    req.body.direccion,
+    req.body.localidad,
+    req.body.entreCalles,
+    req.body.producto,
+    req.body.marca,
+    req.body.accesorios,
+    req.body.modelo,
+    req.body.serie,
+    req.body.falla,
+    req.body.tarea,
+    req.body.observaciones,
+    req.params.id
+  ],
+  (err) => {
+
+    if(err){
+
+      console.log(err);
+
+      return res.status(500).json({
+        ok:false
+      });
+
+    }
+
+    logAction(
+    req.session.user.username,
+    'EDIT_OS',
+    req.params.id
+);
+
+    res.json({
+      ok:true
+    });
+
+  });
+
+});
+
+
+router.delete('/:id', auth, (req, res) => {
+
+  db.run(
+    `DELETE FROM ordenes_servicio WHERE id=?`,
+    [req.params.id],
+    (err) => {
+
+      if(err){
+
+        console.log(err);
+
+        return res.status(500).json({
+          ok:false
+        });
+
+      }
+
+      logAction(
+      req.session.user.username,
+      'DELETE_OS',
+      req.params.id,
+      'WARN'
+      );
+
+      res.json({
+        ok:true
+      });
+
+    }
+  );
 
 });
 
