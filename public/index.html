@@ -620,6 +620,13 @@ Contactos
 </a>
 </li>
 
+<li class="nav-item">
+<a onclick="vista('stock')" class="nav-link">
+<i class="fa-solid fa-boxes-stacked mr-2"></i>
+Stock Service
+</a>
+</li>
+
 </ul>
 
 <div class="sidebar-footer mt-3">
@@ -783,6 +790,131 @@ Guardar
 </table>
 
 </div>
+
+<div id="stock" style="display:none;">
+
+  <div class="card">
+
+    <div class="card-header">
+      <h3 class="card-title">Stock Service</h3>
+    </div>
+
+    <div class="card-body">
+
+   <input
+    id="stockProducto"
+    class="form-control mb-2"
+    placeholder="Producto">  
+
+  <input
+    id="stockMarca"
+    class="form-control mb-2"
+    placeholder="Marca">
+
+  <input
+    id="stockModelo"
+    class="form-control mb-2"
+    placeholder="Modelo">
+
+  <input
+    id="stockNumeroSerie"
+    class="form-control mb-2"
+    placeholder="Número de Serie">
+
+<select
+  id="stockEstado"
+  class="form-control mb-2">
+
+  <option value="">Estado</option>
+  <option>Nuevo</option>
+  <option>Semi Nuevo</option>
+  <option>Usado</option>
+  <option>Reparable</option>
+  <option>Para Repuesto</option>
+  <option>Nota de Crédito</option>
+
+</select>
+
+<input
+  id="stockFechaIngreso"
+  type="date"
+  class="form-control mb-2">
+
+<select
+  id="stockProcedencia"
+  class="form-control mb-2">
+
+  <option value="">Procedencia</option>
+  <option>Retiro</option>
+  <option>Exhibición</option>
+
+</select>
+
+<select
+  id="stockGarantiaActivo"
+  class="form-control mb-2">
+
+  <option value="">Garantía</option>
+  <option value="Si">Sí</option>
+  <option value="No">No</option>
+
+</select>
+
+<select
+  id="stockGarantiaDuracion"
+  class="form-control mb-2">
+
+  <option value="">Duración</option>
+  <option>3 meses</option>
+  <option>6 meses</option>
+  <option>12 meses</option>
+  <option>24 meses</option>
+
+</select>
+
+<select id="stockReparado" class="form-control mb-2">
+  <option value="">Reparado</option>
+  <option value="Si">Sí</option>
+  <option value="No">No</option>
+</select>
+
+<select id="stockTipoReparacion" class="form-control mb-2">
+  <option value="">Tipo de reparación</option>
+  <option>Service Autorizado</option>
+  <option>Service Particular</option>
+</select>
+
+<input
+  id="stockEmpresaReparadora"
+  class="form-control mb-2"
+  placeholder="Empresa reparadora">
+
+<input
+  id="stockTecnicoReparador"
+  class="form-control mb-2"
+  placeholder="Técnico reparador">
+
+
+  <button
+    class="btn btn-success mb-3"
+    onclick="guardarStock()">
+    Guardar
+  </button>
+
+  <button
+    class="btn btn-primary mb-3"
+    onclick="cargarStock()">
+    Cargar Stock
+  </button>
+
+  <div id="stockTabla"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
 
 <!-- ORDENES DE SERVICIO -->
 <div id="ordenes" style="display:none;">
@@ -1228,13 +1360,13 @@ Generar Orden de Servicio
 
 <div class="form-group">
 
-  <label>Accesorios recibidos</label>
+  <label>Observaciones</label>
 
   <textarea
   id="osAccesorios"
   class="form-control"
   rows="3"
-  placeholder="Ej: Control remoto, cable alimentación, manual, soporte de pared, etc."></textarea>
+  placeholder=""></textarea>
 
 </div>
 
@@ -1324,7 +1456,7 @@ Generar Orden de Servicio
 
 <div class="form-group">
 
-  <label>Observaciones</label>
+  <label>Modificacion De Credito</label>
 
   <textarea
   id="osObservaciones"
@@ -1692,7 +1824,8 @@ const titulos = {
   usuarios:'Usuarios',
   logs:'Logs',
   contactos:'Contactos',
-  ordenes:'Órdenes de Servicio'
+  ordenes:'Órdenes de Servicio',
+  stock:'Stock Service'
 };
 
   document.getElementById('tituloVista').innerText = titulos[v];
@@ -1705,7 +1838,8 @@ const vistas = [
   'usuarios',
   'logs',
   'contactos',
-  'ordenes'
+  'ordenes',
+  'stock'
 ];
 
   vistas.forEach(id => {
@@ -2154,7 +2288,7 @@ td{
         </tr>
 
         <tr>
-          <td class="etiqueta">Accesorios</td>
+          <td class="etiqueta">Observaciones</td>
           <td>${document.getElementById('osAccesorios').value}</td>
         </tr>
 
@@ -2208,7 +2342,7 @@ td{
 
 <tr>
   <td colspan="2" style="font-weight:bold;">
-    OBSERVACIONES
+    MODIFICACIÓN DE CRÉDITO
   </td>
 </tr>
 
@@ -2549,6 +2683,63 @@ function cargarContactos(){
   });
 
 }
+
+function cargarStock(){
+
+  fetchAuth('/api/stock-service')
+  .then(r => r.json())
+  .then(data => {
+
+    console.log("STOCK:", data);
+
+    const tabla =
+    document.getElementById('stockTabla');
+
+    if(!tabla) return;
+
+    tabla.innerHTML = `
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+           <th>Producto</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Serie</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="stockBody"></tbody>
+      </table>
+    `;
+
+    const body =
+    document.getElementById('stockBody');
+
+    if(!Array.isArray(data)) return;
+
+    data.forEach(s => {
+
+      body.innerHTML += `
+        <tr>
+          <td>${s.id}</td>
+          <td>${s.producto || '-'}</td>
+          <td>${s.marca || '-'}</td>
+          <td>${s.modelo || '-'}</td>
+          <td>${s.numeroSerie || '-'}</td>
+          <td>${s.estado || '-'}</td>
+        </tr>
+      `;
+
+    });
+
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
+}
+
 
 function cargarHistorial(){
 
@@ -2921,6 +3112,49 @@ fetch('/api/contactos',{
   cEmail.value='';   // 👈 ESTE ES EL ultimo cambio
   cNotas.value='';
 });
+}
+
+function guardarStock(){
+
+fetch('/api/stock-service',{
+  credentials:'include',
+  method:'POST',
+  headers:{
+    'Content-Type':'application/json'
+  },
+  body:JSON.stringify({
+  producto: document.getElementById('stockProducto').value,
+  marca: document.getElementById('stockMarca').value,
+  modelo: document.getElementById('stockModelo').value,
+  numeroSerie: document.getElementById('stockNumeroSerie').value,
+  estado: document.getElementById('stockEstado').value,
+  fechaIngresoStock: document.getElementById('stockFechaIngreso').value,
+  garantiaActivo: document.getElementById('stockGarantiaActivo').value,
+  garantiaDuracion: document.getElementById('stockGarantiaDuracion').value,
+  reparado: document.getElementById('stockReparado').value,
+  tipoReparacion: document.getElementById('stockTipoReparacion').value,
+  empresaReparadora: document.getElementById('stockEmpresaReparadora').value,
+  tecnicoReparador: document.getElementById('stockTecnicoReparador').value
+  })
+})
+.then(()=>{
+
+  cargarStock();
+
+  stockProducto.value='';
+  stockMarca.value='';
+  stockModelo.value='';
+  stockNumeroSerie.value='';
+  stockEstado.value='';
+  stockFechaIngreso.value='';
+  stockGarantiaActivo.value='';
+  stockGarantiaDuracion.value='';
+  stockReparado.value='';
+  stockTipoReparacion.value='';
+  stockEmpresaReparadora.value='';
+  stockTecnicoReparador.value='';
+});
+
 }
 
 function borrarContacto(id){

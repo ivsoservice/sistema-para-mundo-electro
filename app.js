@@ -13,6 +13,8 @@ const helmet = require('helmet');
 const ticketsRoutes = require('./routes/tickets.routes');
 const ordenesRoutes = require('./routes/ordenes.routes');
 
+const stockRoutes = require('./routes/stock.routes');
+
 
 const app = express();
 const db = new sqlite3.Database(process.env.DB_PATH || './tickets.db');
@@ -87,6 +89,11 @@ app.use(
 app.use(
   '/api/contactos',
   contactosRoutes(db, auth, logAction)
+);
+
+app.use(
+  '/api/stock-service',
+  stockRoutes(db, auth, logAction)
 );
 
 // AUTH
@@ -205,6 +212,24 @@ db.run(`
   )
 `);
 
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS stock_service(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    marca TEXT,
+    modelo TEXT,
+    estado TEXT,
+    precio REAL,
+    numeroSerie TEXT,
+    garantia TEXT,
+    quienRepara TEXT,
+    anioFabricacion TEXT,
+    fechaCompra TEXT,
+    observaciones TEXT,
+    fechaAlta TEXT
+  )
+`);
+
   const hash = bcrypt.hashSync('1234',10);
 
   db.run(`
@@ -260,6 +285,151 @@ db.run(`
     console.log("tarea ya existe o no se pudo agregar:", err.message);
   }
 });
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN producto TEXT
+`, (err) => {
+  if (err) {
+    console.log("producto ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN procedencia TEXT
+`, (err) => {
+  if (err) {
+    console.log("procedencia ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN reparado TEXT
+`, (err) => {
+  if (err) {
+    console.log("reparado ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN empresaReparadora TEXT
+`, (err) => {
+  if (err) {
+    console.log("empresaReparadora ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN tecnicoReparador TEXT
+`, (err) => {
+  if (err) {
+    console.log("tecnicoReparador ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN duracionGarantia TEXT
+`, (err) => {
+  if (err) {
+    console.log("duracionGarantia ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN producto TEXT
+`, (err) => {
+  if (err) {
+    console.log("producto ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN fechaIngresoStock TEXT
+`, (err) => {
+  if (err) {
+    console.log("fechaIngresoStock ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN estadoProducto TEXT
+`, (err) => {
+  if (err) {
+    console.log("estadoProducto ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN procedencia TEXT
+`, (err) => {
+  if (err) {
+    console.log("procedencia ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN garantiaActivo TEXT
+`, (err) => {
+  if (err) {
+    console.log("garantiaActivo ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN garantiaDuracion TEXT
+`, (err) => {
+  if (err) {
+    console.log("garantiaDuracion ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN reparado TEXT
+`, (err) => {
+  if (err) {
+    console.log("reparado ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN tipoReparacion TEXT
+`, (err) => {
+  if (err) {
+    console.log("tipoReparacion ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN empresaReparadora TEXT
+`, (err) => {
+  if (err) {
+    console.log("empresaReparadora ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN tecnicoReparador TEXT
+`, (err) => {
+  if (err) {
+    console.log("tecnicoReparador ya existe:", err.message);
+  }
+});
+
 
 // LOGIN
 app.post('/api/login',(req,res)=>{
