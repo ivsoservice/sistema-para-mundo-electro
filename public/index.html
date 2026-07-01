@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+
 <style>
 body{font-size:14px;}
 
@@ -801,113 +802,155 @@ Guardar
 
     <div class="card-body">
 
-   <input
-    id="stockProducto"
-    class="form-control mb-2"
-    placeholder="Producto">  
+<div class="row">
 
-  <input
-    id="stockMarca"
-    class="form-control mb-2"
-    placeholder="Marca">
+  <div class="col-md-6 mb-2">
+    <input id="stockProducto" class="form-control" placeholder="Producto">
+  </div>
 
-  <input
-    id="stockModelo"
-    class="form-control mb-2"
-    placeholder="Modelo">
+  <div class="col-md-3 mb-2">
+    <input id="stockMarca" class="form-control" placeholder="Marca">
+  </div>
 
-  <input
-    id="stockNumeroSerie"
-    class="form-control mb-2"
-    placeholder="Número de Serie">
+  <div class="col-md-3 mb-2">
+    <input id="stockModelo" class="form-control" placeholder="Modelo">
+  </div>
 
-<select
-  id="stockEstado"
-  class="form-control mb-2">
+  <div class="col-md-4 mb-2">
+    <input id="stockNumeroSerie" class="form-control" placeholder="Número de Serie">
+  </div>
 
-  <option value="">Estado</option>
-  <option>Nuevo</option>
-  <option>Semi Nuevo</option>
-  <option>Usado</option>
-  <option>Reparable</option>
-  <option>Para Repuesto</option>
-  <option>Nota de Crédito</option>
+  <div class="col-md-4 mb-2">
+    <select id="stockEstado" class="form-control">
+      <option value="">Estado</option>
+      <option>Nuevo</option>
+      <option>Semi Nuevo</option>
+      <option>Usado</option>
+      <option>Reparable</option>
+      <option>Para Repuesto</option>
+      <option>Nota de Crédito</option>
+    </select>
+  </div>
 
-</select>
+  <div class="col-md-4 mb-2">
+    <input id="stockFechaIngreso" type="date" class="form-control">
+  </div>
 
-<input
-  id="stockFechaIngreso"
-  type="date"
-  class="form-control mb-2">
+  <div class="col-md-4 mb-2">
+    <select id="stockProcedencia" class="form-control">
+      <option value="">Procedencia</option>
+      <option>Retiro</option>
+      <option>Exhibición</option>
+    </select>
+  </div>
 
-<select
-  id="stockProcedencia"
-  class="form-control mb-2">
+  <div class="col-md-4 mb-2">
+    <select id="stockGarantiaActivo" class="form-control">
+      <option value="">Garantía</option>
+      <option value="Si">Sí</option>
+      <option value="No">No</option>
+    </select>
+  </div>
 
-  <option value="">Procedencia</option>
-  <option>Retiro</option>
-  <option>Exhibición</option>
+  <div class="col-md-4 mb-2">
+    <select id="stockGarantiaDuracion" class="form-control">
+      <option value="">Duración</option>
+      <option>3 meses</option>
+      <option>6 meses</option>
+      <option>12 meses</option>
+      <option>24 meses</option>
+    </select>
+  </div>
 
-</select>
+  <div class="col-md-4 mb-2">
+    <select id="stockReparado" class="form-control">
+      <option value="">Reparado</option>
+      <option value="Si">Sí</option>
+      <option value="No">No</option>
+    </select>
+  </div>
 
-<select
-  id="stockGarantiaActivo"
-  class="form-control mb-2">
+  <div class="col-md-4 mb-2">
+    <select id="stockTipoReparacion" class="form-control">
+      <option value="">Tipo de reparación</option>
+      <option>Service Autorizado</option>
+      <option>Service Particular</option>
+    </select>
+  </div>
 
-  <option value="">Garantía</option>
-  <option value="Si">Sí</option>
-  <option value="No">No</option>
+  <div class="col-md-4 mb-2">
+    <input id="stockEmpresaReparadora" class="form-control" placeholder="Empresa reparadora">
+  </div>
 
-</select>
+  <div class="col-md-4 mb-2">
+    <input id="stockTecnicoReparador" class="form-control" placeholder="Técnico reparador">
+  </div>
 
-<select
-  id="stockGarantiaDuracion"
-  class="form-control mb-2">
+  <div class="col-12">
+    <hr>
+    <h6><b>Observaciones Inteligentes</b></h6>
+  </div>
 
-  <option value="">Duración</option>
-  <option>3 meses</option>
-  <option>6 meses</option>
-  <option>12 meses</option>
-  <option>24 meses</option>
+  <div class="col-md-4 mb-2">
+    <select id="stockEstadoEstetico" class="form-control">
+      <option value="">Estado Estético</option>
+      <option>Excelente</option>
+      <option>Muy Bueno</option>
+      <option>Bueno</option>
+      <option>Regular</option>
+      <option>Malo</option>
+    </select>
+  </div>
 
-</select>
+  <div class="col-md-8 mb-2">
+    <input id="stockAccesorios" class="form-control" placeholder="Accesorios incluidos">
+  </div>
 
-<select id="stockReparado" class="form-control mb-2">
-  <option value="">Reparado</option>
-  <option value="Si">Sí</option>
-  <option value="No">No</option>
-</select>
+  <div class="col-md-6 mb-2">
+    <input id="stockFaltantes" class="form-control" placeholder="Faltantes">
+  </div>
 
-<select id="stockTipoReparacion" class="form-control mb-2">
-  <option value="">Tipo de reparación</option>
-  <option>Service Autorizado</option>
-  <option>Service Particular</option>
-</select>
+  <div class="col-md-6 mb-2">
+    <textarea id="stockDetallesTecnicos" class="form-control" rows="2" placeholder="Detalles técnicos"></textarea>
+  </div>
 
-<input
-  id="stockEmpresaReparadora"
-  class="form-control mb-2"
-  placeholder="Empresa reparadora">
+  <div class="col-12 mb-3">
+    <textarea id="stockComentariosInternos" class="form-control" rows="3" placeholder="Comentarios internos"></textarea>
+  </div>
 
-<input
-  id="stockTecnicoReparador"
-  class="form-control mb-2"
-  placeholder="Técnico reparador">
+</div>
 
+<button class="btn btn-success mb-3" onclick="guardarStock()">
+  Guardar
+</button>
 
-  <button
-    class="btn btn-success mb-3"
-    onclick="guardarStock()">
-    Guardar
-  </button>
+<button class="btn btn-primary mb-3" onclick="cargarStock()">
+  Cargar Stock
+</button>
 
-  <button
-    class="btn btn-primary mb-3"
-    onclick="cargarStock()">
-    Cargar Stock
-  </button>
+  <table class="table table-bordered table-hover">
 
-  <div id="stockTabla"></div>
+  <thead>
+
+    <tr>
+      <th>ID</th>
+      <th>Producto</th>
+      <th>Marca</th>
+      <th>Modelo</th>
+      <th>Serie</th>
+      <th>Estado</th>
+      <th>Procedencia</th>
+      <th>Garantía</th>
+      <th>Acciones</th>
+    </tr>
+
+  </thead>
+
+  <tbody id="stockTabla">
+
+  </tbody>
+
+</table>
 
     </div>
 
@@ -1726,6 +1769,7 @@ let autoRefresh = null;
 let ticketDetalleId = null;
 
 let ordenActualId = null;
+let stockEditando = null;
 
 function login(){
 
@@ -2697,38 +2741,46 @@ function cargarStock(){
 
     if(!tabla) return;
 
-    tabla.innerHTML = `
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>ID</th>
-           <th>Producto</th>
-            <th>Marca</th>
-            <th>Modelo</th>
-            <th>Serie</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody id="stockBody"></tbody>
-      </table>
-    `;
+tabla.innerHTML = '';
 
-    const body =
-    document.getElementById('stockBody');
+const body = tabla;
 
     if(!Array.isArray(data)) return;
 
     data.forEach(s => {
 
       body.innerHTML += `
-        <tr>
-          <td>${s.id}</td>
-          <td>${s.producto || '-'}</td>
-          <td>${s.marca || '-'}</td>
-          <td>${s.modelo || '-'}</td>
-          <td>${s.numeroSerie || '-'}</td>
-          <td>${s.estado || '-'}</td>
-        </tr>
+<tr>
+  <td>${s.id}</td>
+  <td>${s.producto || '-'}</td>
+  <td>${s.marca || '-'}</td>
+  <td>${s.modelo || '-'}</td>
+  <td>${s.numeroSerie || '-'}</td>
+  <td>${s.estado || '-'}</td>
+  <td>${s.procedencia || '-'}</td>
+  <td>${s.garantiaActivo || '-'}</td>
+
+<td>
+
+  <button
+    class="btn btn-warning btn-sm"
+    onclick="editarStock(${s.id})">
+
+    Editar
+
+  </button>
+
+  <button
+    class="btn btn-danger btn-sm"
+    onclick="eliminarStock(${s.id})">
+
+    Eliminar
+
+  </button>
+
+</td>
+
+</tr>
       `;
 
     });
@@ -2924,6 +2976,8 @@ setTimeout(() => {
 
 }
 
+
+
 function imprimirTicket(id){
 
 fetchAuth('/api/tickets/' + id)
@@ -3116,9 +3170,17 @@ fetch('/api/contactos',{
 
 function guardarStock(){
 
-fetch('/api/stock-service',{
+const url = stockEditando
+  ? '/api/stock-service/' + stockEditando
+  : '/api/stock-service';
+
+const metodo = stockEditando
+  ? 'PUT'
+  : 'POST';
+
+fetch(url,{
   credentials:'include',
-  method:'POST',
+  method: metodo,
   headers:{
     'Content-Type':'application/json'
   },
@@ -3134,7 +3196,12 @@ fetch('/api/stock-service',{
   reparado: document.getElementById('stockReparado').value,
   tipoReparacion: document.getElementById('stockTipoReparacion').value,
   empresaReparadora: document.getElementById('stockEmpresaReparadora').value,
-  tecnicoReparador: document.getElementById('stockTecnicoReparador').value
+  tecnicoReparador: document.getElementById('stockTecnicoReparador').value,
+  estadoEstetico: document.getElementById('stockEstadoEstetico').value,
+  accesorios: document.getElementById('stockAccesorios').value,
+  faltantes: document.getElementById('stockFaltantes').value,
+  detallesTecnicos: document.getElementById('stockDetallesTecnicos').value,
+  comentariosInternos: document.getElementById('stockComentariosInternos').value,
   })
 })
 .then(()=>{
@@ -3153,6 +3220,11 @@ fetch('/api/stock-service',{
   stockTipoReparacion.value='';
   stockEmpresaReparadora.value='';
   stockTecnicoReparador.value='';
+  stockEstadoEstetico.value='';
+  stockAccesorios.value='';
+  stockFaltantes.value='';
+  stockDetallesTecnicos.value='';
+  stockComentariosInternos.value='';
 });
 
 }
@@ -3168,6 +3240,58 @@ fetch('/api/contactos/'+id,{
   cargar();
 })
 .catch(err => console.log(err));
+
+}
+
+function eliminarStock(id){
+
+  if(!confirm('¿Eliminar este producto del stock?')){
+    return;
+  }
+
+  fetch('/api/stock-service/' + id, {
+    credentials:'include',
+    method:'DELETE'
+  })
+  .then(r => r.json())
+  .then(() => {
+    cargarStock();
+  });
+
+}
+
+function editarStock(id){
+
+  fetchAuth('/api/stock-service')
+  .then(r => r.json())
+  .then(data => {
+
+    const s = data.find(x => x.id == id);
+
+    if(!s) return;
+
+    stockEditando = id;
+
+    stockProducto.value = s.producto || '';
+    stockMarca.value = s.marca || '';
+    stockModelo.value = s.modelo || '';
+    stockNumeroSerie.value = s.numeroSerie || '';
+    stockEstado.value = s.estado || '';
+    stockFechaIngreso.value = s.fechaIngresoStock || '';
+    stockProcedencia.value = s.procedencia || '';
+    stockGarantiaActivo.value = s.garantiaActivo || '';
+    stockGarantiaDuracion.value = s.garantiaDuracion || '';
+    stockReparado.value = s.reparado || '';
+    stockTipoReparacion.value = s.tipoReparacion || '';
+    stockEmpresaReparadora.value = s.empresaReparadora || '';
+    stockTecnicoReparador.value = s.tecnicoReparador || '';
+    stockEstadoEstetico.value = s.estadoEstetico || '';
+    stockAccesorios.value = s.accesorios || '';
+    stockFaltantes.value = s.faltantes || '';
+    stockDetallesTecnicos.value = s.detallesTecnicos || '';
+    stockComentariosInternos.value = s.comentariosInternos || '';
+
+  });
 
 }
 
