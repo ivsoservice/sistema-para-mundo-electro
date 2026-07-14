@@ -725,7 +725,7 @@ Panel Principal
 
 </div>
 
-<div class="mb-3">
+<div id="buscadorTicketsPanel" class="mb-3">
 
   <div style="position:relative; max-width:600px;">
 
@@ -733,9 +733,9 @@ Panel Principal
 
   <i class="fa-solid fa-magnifying-glass search-icon"></i>
 
-  <input id="buscadorGlobal"
-         class="form-control search-input"
-         placeholder="Buscar tickets por caso, cliente, marca...">
+<input id="buscadorTickets"
+       class="form-control search-input"
+       placeholder="🔍 Buscar ticket por caso, cliente o marca...">
 
 </div>
 
@@ -796,9 +796,15 @@ Guardar
 
   <div class="card">
 
-    <div class="card-header">
-      <h3 class="card-title">Stock Service</h3>
-    </div>
+<div class="card-header">
+  <h3 class="card-title">Stock Service</h3>
+
+  <div id="stockEditandoInfo"
+       class="alert alert-warning mt-2"
+       style="display:none;">
+  </div>
+
+</div>
 
     <div class="card-body">
 
@@ -920,42 +926,80 @@ Guardar
 
 </div>
 
-<button class="btn btn-success mb-3" onclick="guardarStock()">
+<button
+  id="btnGuardarStock"
+  class="btn btn-success mb-3"
+  onclick="guardarStock()">
   Guardar
 </button>
+
+<button
+  id="btnCancelarEdicion"
+  class="btn btn-secondary mb-3"
+  style="display:none;"
+  onclick="cancelarEdicionStock()">
+  Cancelar edición
+</button>
+
 
 <button class="btn btn-primary mb-3" onclick="cargarStock()">
   Cargar Stock
 </button>
 
-  <table class="table table-bordered table-hover">
+<div class="card mt-4">
 
-  <thead>
+  <div class="card-header">
+    <h3 class="card-title">Productos en Stock</h3>
+  </div>
 
-    <tr>
-      <th>ID</th>
-      <th>Producto</th>
-      <th>Marca</th>
-      <th>Modelo</th>
-      <th>Serie</th>
-      <th>Estado</th>
-      <th>Procedencia</th>
-      <th>Garantía</th>
-      <th>Acciones</th>
-    </tr>
+  <div class="card-body">
 
-  </thead>
+ <div class="row mb-3">
 
-  <tbody id="stockTabla">
+  <div class="col-md-4">
+    <select id="filtroEstado" class="form-control">
+      <option value="">Todos los estados</option>
+      <option>Nuevo</option>
+      <option>Semi Nuevo</option>
+      <option>Usado</option>
+      <option>Reparable</option>
+      <option>Para Repuesto</option>
+      <option>Nota de Crédito</option>
+    </select>
+  </div>
 
-  </tbody>
+  <div class="col-md-4">
+    <select id="filtroProcedencia" class="form-control">
+      <option value="">Todas las procedencias</option>
+      <option>Retiro</option>
+      <option>Exhibición</option>
+    </select>
+  </div>
 
-</table>
+  <div class="col-md-4">
+    <select id="filtroGarantia" class="form-control">
+      <option value="">Con y sin garantía</option>
+      <option value="Si">Con garantía</option>
+      <option value="No">Sin garantía</option>
+    </select>
+  </div>
 
-    </div>
+</div>
+
+
+    <input
+      id="buscarStock"
+      class="form-control mb-3"
+      placeholder="🔍 Buscar producto...">
+
+    <div id="stockTabla"></div>
 
   </div>
 
+</div>
+
+</div>
+</div>
 </div>
 
 
@@ -1335,12 +1379,53 @@ Generar Orden de Servicio
 </div>
 </div>
 
+<div class="modal fade" id="stockDetalleModal">
+
+<div class="modal-dialog">
+
+<div class="modal-content p-3">
+
+<h5>Detalle del Producto</h5>
+
+<p><b>Producto:</b> <span id="sdProducto"></span></p>
+<p><b>Marca:</b> <span id="sdMarca"></span></p>
+<p><b>Modelo:</b> <span id="sdModelo"></span></p>
+<p><b>Serie:</b> <span id="sdSerie"></span></p>
+<p><b>Estado:</b> <span id="sdEstado"></span></p>
+<p><b>Procedencia:</b> <span id="sdProcedencia"></span></p>
+<p><b>Garantía:</b> <span id="sdGarantia"></span></p>
+
+<div class="mt-3">
+
+<button
+class="btn-modern btn-warn"
+onclick="editarStock(stockDetalleId)">
+Editar
+</button>
+
+<button
+class="btn-modern btn-main"
+data-bs-dismiss="modal">
+Cerrar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
 <!-- MODAL ORDEN DE SERVICIO -->
 <div class="modal fade" id="modalOrden">
 
 <div class="modal-dialog modal-lg">
 
 <div class="modal-content p-3">
+
+<input type="hidden" id="osUsuarioCreacion">
 
 <h4>Nueva Orden de Servicio</h4>
 
@@ -1767,6 +1852,7 @@ let paginaDiario = 1;
 let paginaDistribuidora = 1;
 let autoRefresh = null;
 let ticketDetalleId = null;
+let stockDetalleId = null;
 
 let ordenActualId = null;
 let stockEditando = null;
@@ -1904,6 +1990,12 @@ const vistas = [
 document.getElementById('kpiPanel').style.display =
   (v === 'panel') ? 'flex' : 'none';
 
+document.getElementById('buscadorTicketsPanel').style.display =
+  (v === 'panel' || v === 'diario' || v === 'distribuidora')
+    ? 'block'
+    : 'none';
+
+
   tipoActual = v;
 
   if(v === 'diario') paginaDiario = 1;
@@ -2029,6 +2121,7 @@ async function verOrden(id){
     );
 
     const orden = await res.json();
+console.log("ORDEN CARGADA:", orden);
 
     document.getElementById('osNumero').value =
       orden.numeroOrden || '';
@@ -2079,6 +2172,14 @@ async function verOrden(id){
     document.getElementById('osObservaciones').value =
       orden.observaciones || '';
 
+    document.getElementById('osUsuarioCreacion').value =
+      orden.usuarioCreacion || '';
+
+    console.log(
+  "CAMPO OCULTO:",
+  document.getElementById('osUsuarioCreacion').value
+);
+
     $('#modalOrden').modal('show');
 
   }catch(err){
@@ -2109,6 +2210,11 @@ function validarImpresionOrden(){
 }
 
 function imprimirOrden(){
+
+console.log(
+  "USUARIO AL IMPRIMIR:",
+  document.getElementById('osUsuarioCreacion').value
+);
 
   const contenido = `
     <html>
@@ -2293,6 +2399,11 @@ td{
         <tr>
           <td class="etiqueta">Cliente</td>
           <td>${document.getElementById('osCliente').value}</td>
+        </tr>
+  
+        <tr>
+          <td class="etiqueta">Creado por</td>
+          <td>${document.getElementById('osUsuarioCreacion').value}</td>
         </tr>
 
         <tr>
@@ -2747,7 +2858,39 @@ const body = tabla;
 
     if(!Array.isArray(data)) return;
 
-    data.forEach(s => {
+    const texto = document.getElementById('buscarStock').value.toLowerCase();
+    const estado = document.getElementById('filtroEstado').value;
+    const procedencia = document.getElementById('filtroProcedencia').value;
+    const garantia = document.getElementById('filtroGarantia').value;
+
+    data
+.filter(s => {
+
+const coincideBusqueda =
+
+  (s.producto || '').toLowerCase().includes(texto) ||
+  (s.marca || '').toLowerCase().includes(texto) ||
+  (s.modelo || '').toLowerCase().includes(texto) ||
+  (s.numeroSerie || '').toLowerCase().includes(texto);
+
+const coincideEstado =
+  !estado || s.estado === estado;
+
+const coincideProcedencia =
+  !procedencia || s.procedencia === procedencia;
+
+const coincideGarantia =
+  !garantia || s.garantiaActivo === garantia;
+
+return (
+  coincideBusqueda &&
+  coincideEstado &&
+  coincideProcedencia &&
+  coincideGarantia
+);
+
+})
+.forEach(s => {
 
       body.innerHTML += `
 <tr>
@@ -2763,19 +2906,21 @@ const body = tabla;
 <td>
 
   <button
+    class="btn btn-info btn-sm"
+    onclick="verStock(${s.id})">
+    Ver
+  </button>
+
+  <button
     class="btn btn-warning btn-sm"
     onclick="editarStock(${s.id})">
-
     Editar
-
   </button>
 
   <button
     class="btn btn-danger btn-sm"
     onclick="eliminarStock(${s.id})">
-
     Eliminar
-
   </button>
 
 </td>
@@ -2972,7 +3117,7 @@ setTimeout(() => {
 
   editar(ticketDetalleId);
 
-}, 300);
+}, 300); 
 
 }
 
@@ -3202,11 +3347,30 @@ fetch(url,{
   faltantes: document.getElementById('stockFaltantes').value,
   detallesTecnicos: document.getElementById('stockDetallesTecnicos').value,
   comentariosInternos: document.getElementById('stockComentariosInternos').value,
+  procedencia: document.getElementById('stockProcedencia').value,
   })
 })
 .then(()=>{
 
+  if(stockEditando){
+    alert('Producto actualizado correctamente.');
+  }else{
+    alert('Producto agregado al stock.');
+  }
+
   cargarStock();
+
+  stockEditando = null;
+
+  document.getElementById('stockEditandoInfo').style.display = 'none';
+
+  console.log("Ocultando cartel...");
+
+  document.getElementById('btnCancelarEdicion').style.display =
+  'none';
+
+  document.getElementById('btnGuardarStock').innerText =
+  'Guardar';
 
   stockProducto.value='';
   stockMarca.value='';
@@ -3260,6 +3424,34 @@ function eliminarStock(id){
 
 }
 
+function verStock(id){
+
+  fetchAuth('/api/stock-service')
+  .then(r => r.json())
+  .then(data => {
+
+    const s = data.find(x => x.id == id);
+
+    if(!s) return;
+
+stockDetalleId = s.id;
+
+document.getElementById('sdProducto').innerText = s.producto || '-';
+document.getElementById('sdMarca').innerText = s.marca || '-';
+document.getElementById('sdModelo').innerText = s.modelo || '-';
+document.getElementById('sdSerie').innerText = s.numeroSerie || '-';
+document.getElementById('sdEstado').innerText = s.estado || '-';
+document.getElementById('sdProcedencia').innerText = s.procedencia || '-';
+document.getElementById('sdGarantia').innerText = s.garantiaActivo || '-';
+
+console.log(s);
+
+$('#stockDetalleModal').modal('show');
+
+   });
+
+  }
+
 function editarStock(id){
 
   fetchAuth('/api/stock-service')
@@ -3271,6 +3463,21 @@ function editarStock(id){
     if(!s) return;
 
     stockEditando = id;
+
+    const info = document.getElementById('stockEditandoInfo');
+
+    info.style.display = 'block';
+ 
+    info.innerHTML =
+    `<strong>Editando:</strong> ${s.producto} - ${s.marca} ${s.modelo}`;   
+
+
+    document.getElementById('btnGuardarStock').innerText =
+    'Actualizar Producto'; 
+
+    document.getElementById('btnCancelarEdicion').style.display =
+    'inline-block';
+
 
     stockProducto.value = s.producto || '';
     stockMarca.value = s.marca || '';
@@ -3291,9 +3498,51 @@ function editarStock(id){
     stockDetallesTecnicos.value = s.detallesTecnicos || '';
     stockComentariosInternos.value = s.comentariosInternos || '';
 
+    document.getElementById('stockProducto').scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+  
   });
 
+    });
+
 }
+
+function cancelarEdicionStock(){
+
+  stockEditando = null;
+
+  stockProducto.value='';
+  stockMarca.value='';
+  stockModelo.value='';
+  stockNumeroSerie.value='';
+  stockEstado.value='';
+  stockFechaIngreso.value='';
+  stockProcedencia.value='';
+  stockGarantiaActivo.value='';
+  stockGarantiaDuracion.value='';
+  stockReparado.value='';
+  stockTipoReparacion.value='';
+  stockEmpresaReparadora.value='';
+  stockTecnicoReparador.value='';
+  stockEstadoEstetico.value='';
+  stockAccesorios.value='';
+  stockFaltantes.value='';
+  stockDetallesTecnicos.value='';
+  stockComentariosInternos.value='';
+
+  document.getElementById('btnGuardarStock').innerText =
+  'Guardar';
+
+  document.getElementById('btnCancelarEdicion').style.display =
+  'none';
+
+  document.getElementById('stockEditandoInfo').style.display = 'none';
+ 
+  console.log("Cancelando edición...");
+
+}
+
 
 function siguientePagina(){
 
@@ -3335,7 +3584,7 @@ function anteriorPagina(){
 
 }
 
-const buscador = document.getElementById("buscadorGlobal");
+const buscador = document.getElementById("buscadorTickets");
 const resultados = document.getElementById("resultadosBusqueda");
 
 document.addEventListener('click', (e) => {
@@ -3416,6 +3665,20 @@ buscador.addEventListener('input', () => {
   }, 300);
 
 });
+
+const buscarStock = document.getElementById('buscarStock');
+
+if(buscarStock){
+  buscarStock.addEventListener('input', cargarStock);
+}
+document.getElementById('filtroEstado')
+.addEventListener('change', cargarStock);
+
+document.getElementById('filtroProcedencia')
+.addEventListener('change', cargarStock);
+
+document.getElementById('filtroGarantia')
+.addEventListener('change', cargarStock);
 
 </script>
 

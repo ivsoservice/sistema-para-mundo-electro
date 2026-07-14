@@ -240,6 +240,8 @@ db.run(`
 
 });
 
+
+
 db.run(`
   ALTER TABLE ordenes_servicio
   ADD COLUMN telefono TEXT
@@ -429,6 +431,53 @@ db.run(`
     console.log("tecnicoReparador ya existe:", err.message);
   }
 });
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN estadoEstetico TEXT
+`, (err) => {
+  if (err) {
+    console.log("estadoEstetico ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN accesorios TEXT
+`, (err) => {
+  if (err) {
+    console.log("accesorios ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN faltantes TEXT
+`, (err) => {
+  if (err) {
+    console.log("faltantes ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN detallesTecnicos TEXT
+`, (err) => {
+  if (err) {
+    console.log("detallesTecnicos ya existe:", err.message);
+  }
+});
+
+db.run(`
+  ALTER TABLE stock_service
+  ADD COLUMN comentariosInternos TEXT
+`, (err) => {
+  if (err) {
+    console.log("comentariosInternos ya existe:", err.message);
+  }
+});
+
+
 
 
 // LOGIN
