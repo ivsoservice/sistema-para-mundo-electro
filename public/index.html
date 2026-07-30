@@ -524,6 +524,297 @@ body{
   border-top: 4px solid #06b6d4;
 }
 
+/* ============================
+   STOCK SERVICE V2
+============================ */
+
+.stock-card{
+    background:#fff;
+    border:1px solid #dee2e6;
+    border-radius:12px;
+    margin-bottom:15px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    transition:.2s;
+}
+
+.stock-card:hover{
+    box-shadow:0 6px 18px rgba(0,0,0,.15);
+    transform:translateY(-2px);
+}
+
+.stock-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 18px;
+    background:#f8f9fa;
+    border-bottom:1px solid #e9ecef;
+}
+
+.stock-title{
+    font-size:20px;
+    font-weight:bold;
+    color:#212529;
+}
+
+.stock-id{
+    font-size:12px;
+    color:#6c757d;
+}
+
+.stock-body{
+    padding:18px;
+}
+
+.stock-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:18px;
+}
+
+.stock-item{
+    margin-bottom:10px;
+}
+
+.stock-label{
+    font-size:12px;
+    color:#6c757d;
+    text-transform:uppercase;
+    font-weight:bold;
+}
+
+.stock-value{
+    font-size:15px;
+    font-weight:600;
+}
+
+.stock-actions{
+    border-top:1px solid #eee;
+    margin-top:18px;
+    padding-top:15px;
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+}
+
+.badge-estado{
+    padding:6px 12px;
+    border-radius:20px;
+    color:white;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.estado-nuevo{
+    background:#28a745;
+}
+
+.estado-semi{
+    background:#ffc107;
+    color:#212529;
+}
+
+.estado-usado{
+    background:#17a2b8;
+}
+
+.estado-reparable{
+    background:#fd7e14;
+}
+
+.estado-repuesto{
+    background:#dc3545;
+}
+
+.badge-garantia-si{
+    background:#28a745;
+    color:white;
+    padding:4px 10px;
+    border-radius:15px;
+}
+
+.badge-garantia-no{
+    background:#6c757d;
+    color:white;
+    padding:4px 10px;
+    border-radius:15px;
+}
+
+.stock-card{
+    border:0;
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+    transition:.25s;
+    background:#fff;
+}
+
+.stock-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 24px rgba(0,0,0,.15);
+}
+
+.stock-header{
+    background:#1f4e79;
+    color:#fff;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.stock-title{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.stock-id{
+    opacity:.8;
+    font-size:12px;
+}
+
+.stock-body{
+    padding:20px;
+}
+
+.stock-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+}
+
+.stock-item{
+    margin-bottom:12px;
+}
+
+.stock-label{
+    color:#888;
+    font-size:12px;
+    text-transform:uppercase;
+}
+
+.stock-value{
+    font-size:15px;
+    font-weight:600;
+}
+
+.stock-obs{
+    margin-top:20px;
+    background:#f8f9fa;
+    border-left:5px solid #1f4e79;
+    padding:15px;
+    border-radius:6px;
+}
+
+.stock-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:20px;
+}
+
+.stock-actions .btn{
+    min-width:95px;
+}
+
+.badge-estado{
+    font-size:13px;
+    padding:7px 12px;
+    border-radius:20px;
+}
+
+.estado-nuevo{
+    background:#28a745;
+    color:white;
+}
+
+.estado-semi{
+    background:#007bff;
+    color:white;
+}
+
+.estado-usado{
+    background:#6c757d;
+    color:white;
+}
+
+.estado-reparable{
+    background:#ffc107;
+    color:black;
+}
+
+.estado-repuesto{
+    background:#dc3545;
+    color:white;
+}
+
+.badge-garantia-si{
+    background:#28a745;
+    color:#fff;
+    padding:5px 10px;
+    border-radius:20px;
+}
+
+.badge-garantia-no{
+    background:#dc3545;
+    color:#fff;
+    padding:5px 10px;
+    border-radius:20px;
+}
+
+.stock-divider{
+    border-top:1px solid #e9ecef;
+    margin:18px 0;
+}
+
+.stock-price{
+    font-size:20px;
+    font-weight:bold;
+    color:#28a745;
+}
+
+.stock-info{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+    padding-bottom:8px;
+    border-bottom:1px dashed #ececec;
+}
+
+.stock-info:last-child{
+    border:none;
+}
+
+.stock-info span:first-child{
+    color:#777;
+    font-weight:600;
+}
+
+.stock-info span:last-child{
+    font-weight:bold;
+}
+
+.stock-header{
+    background:linear-gradient(135deg,#1f4e79,#286090);
+}
+
+.stock-actions .btn{
+    flex:1;
+}
+
+.stock-actions{
+    display:flex;
+    gap:10px;
+}
+
+.stock-obs{
+    line-height:1.6;
+}
+
+
 </style>
 </head>
 
@@ -1733,13 +2024,23 @@ function fetchAuth(url, options = {}){
 // MI SISTEMA GRANDE EMPIEZA ACÁ
 function cargar(){
 
-fetch('/api/tickets?tipo=' + tipoActual,{
+  fetch('/api/tickets?tipo=' + tipoActual,{
+    credentials:'include'
+  })
+
+const pagina = tipoActual === 'diario'
+  ? paginaDiario
+  : paginaDistribuidora;
+
+fetch('/api/tickets?tipo=' + tipoActual + '&page=' + pagina,{
+
   credentials:'include'
 })
+
 .then(r => r.json())
 .then(data => {
 
-  console.log("DATA TICKETS:", data);
+  
 
   if (!data || !data.tickets) return;
 
@@ -2890,53 +3191,189 @@ return (
 );
 
 })
+
+
 .forEach(s => {
 
-      body.innerHTML += `
-<tr>
-  <td>${s.id}</td>
-  <td>${s.producto || '-'}</td>
-  <td>${s.marca || '-'}</td>
-  <td>${s.modelo || '-'}</td>
-  <td>${s.numeroSerie || '-'}</td>
-  <td>${s.estado || '-'}</td>
-  <td>${s.procedencia || '-'}</td>
-  <td>${s.garantiaActivo || '-'}</td>
+    body.innerHTML += generarCardStock(s);
 
-<td>
+});
 
-  <button
-    class="btn btn-info btn-sm"
-    onclick="verStock(${s.id})">
-    Ver
-  </button>
+})
 
-  <button
-    class="btn btn-warning btn-sm"
-    onclick="editarStock(${s.id})">
-    Editar
-  </button>
-
-  <button
-    class="btn btn-danger btn-sm"
-    onclick="eliminarStock(${s.id})">
-    Eliminar
-  </button>
-
-</td>
-
-</tr>
-      `;
-
-    });
-
-  })
   .catch(err => {
     console.log(err);
   });
-
 }
 
+function generarCardStock(s){
+
+    return `
+
+<div class="stock-card">
+
+    <div class="stock-header">
+
+        <div>
+
+            <div class="stock-title">
+                📦 ${s.producto || '-'}
+            </div>
+
+            <div class="stock-id">
+                ID #${s.id}
+            </div>
+
+        </div>
+
+        <div>
+
+            <span class="${
+                s.estado === 'Nuevo' ? 'badge-estado estado-nuevo' :
+                s.estado === 'Semi Nuevo' ? 'badge-estado estado-semi' :
+                s.estado === 'Usado' ? 'badge-estado estado-usado' :
+                s.estado === 'Reparable' ? 'badge-estado estado-reparable' :
+                'badge-estado estado-repuesto'
+            }">
+
+                ${s.estado || '-'}
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="stock-body">
+
+        <div class="stock-grid">
+
+            <div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Marca</div>
+                    <div class="stock-value">${s.marca || '-'}</div>
+                </div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Modelo</div>
+                    <div class="stock-value">${s.modelo || '-'}</div>
+                </div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Número de Serie</div>
+                    <div class="stock-value">${s.numeroSerie || '-'}</div>
+                </div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Procedencia</div>
+                    <div class="stock-value">📍 ${s.procedencia || '-'}</div>
+                </div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Fecha de ingreso</div>
+                    <div class="stock-value">${s.fechaIngresoStock || '-'}</div>
+                </div>
+
+            </div>
+
+            <div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Garantía</div>
+
+                    <div class="stock-value">
+
+                        <span class="${
+                            s.garantiaActivo === 'Si'
+                            ? 'badge-garantia-si'
+                            : 'badge-garantia-no'
+                        }">
+
+                            ${s.garantiaActivo === 'Si'
+                                ? '✔ Con garantía'
+                                : '✖ Sin garantía'}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Duración</div>
+                    <div class="stock-value">${s.garantiaDuracion || '-'}</div>
+                </div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Reparado</div>
+                    <div class="stock-value">${s.reparado || '-'}</div>
+                </div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Técnico</div>
+                    <div class="stock-value">${s.tecnicoReparador || '-'}</div>
+                </div>
+
+                <div class="stock-item">
+                    <div class="stock-label">Estado estético</div>
+                    <div class="stock-value">${s.estadoEstetico || '-'}</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="stock-obs">
+
+            <strong>📝 Observaciones</strong>
+
+            <hr style="margin:8px 0;">
+
+            ${s.observaciones || 'Sin observaciones.'}
+
+            ${s.comentariosInternos
+                ? `<br><br><strong>💬 Comentarios internos:</strong><br>${s.comentariosInternos}`
+                : ''
+            }
+
+        </div>
+
+        <div class="stock-actions">
+
+            <button
+                class="btn btn-info btn-sm"
+                onclick="verStock(${s.id})">
+
+                👁 Ver
+
+            </button>
+
+            <button
+                class="btn btn-warning btn-sm"
+                onclick="editarStock(${s.id})">
+
+                ✏ Editar
+
+            </button>
+
+            <button
+                class="btn btn-danger btn-sm"
+                onclick="eliminarStock(${s.id})">
+
+                🗑 Eliminar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+`;
+
+}
 
 function cargarHistorial(){
 
@@ -3545,6 +3982,7 @@ function cancelarEdicionStock(){
 
 
 function siguientePagina(){
+
 
   if(tipoActual === 'diario'){
 
