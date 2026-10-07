@@ -1,0 +1,46 @@
+<!-- CONTACTOS -->
+<div id="contactos">
+
+<div class="mb-2">
+
+<select id="cTipo" class="form-control">
+  <option value="" disabled selected>Elegí tipo</option>
+  <option value="post venta">Post venta</option>
+  <option value="tecnico">Técnico</option>
+  <option value="consulta">Consulta</option>
+</select>
+
+<input id="cNombre" class="form-control" placeholder="Nombre">
+
+<input id="cMarca" class="form-control" placeholder="Marca">
+
+<input id="cTelefono" class="form-control" placeholder="Teléfono">
+
+<input id="cEmail" class="form-control" placeholder="Email">
+
+<input id="cNotas" class="form-control" placeholder="Notas">
+
+<button onclick="crearContacto()"
+class="btn-modern btn-main">
+Guardar
+</button>
+
+</div>
+
+<table class="table">
+<thead>
+  <tr>
+    <th>Tipo</th>
+    <th>Nombre</th>
+    <th>Marca</th>
+    <th>Teléfono</th>
+    <th>Email</th>
+    <th>Notas</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
+<tbody id="listaContactos"></tbody>
+
+</table>
+
+</div>

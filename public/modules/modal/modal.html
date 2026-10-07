@@ -1,0 +1,401 @@
+<!-- MODAL -->
+<div class="modal fade" id="modal">
+
+<div class="modal-dialog">
+
+<div class="modal-content p-3">
+
+<select id="estado" class="form-control mb-1">
+  <option value="Ingresado">Ingresado</option>
+  <option value="En proceso">En proceso</option>
+  <option value="Resuelto">Resuelto</option>
+</select>
+
+<input id="titulo" class="form-control mb-1" placeholder="Producto">
+
+<input id="cliente" class="form-control mb-1" placeholder="Cliente">
+
+<input id="marca" class="form-control mb-1" placeholder="Marca">
+
+<input id="fechaIngreso" type="date" class="form-control mb-1">
+
+<input id="tecnico" class="form-control mb-1" placeholder="Recepciona">
+
+<textarea id="descripcion" class="form-control mb-1" placeholder="Info"></textarea>
+
+<select id="prioridad" class="form-control mb-1">
+  <option value="baja">Baja</option>
+  <option value="media">Media</option>
+  <option value="alta">Alta</option>
+</select>
+
+
+<div class="d-flex justify-content-between">
+
+<button type="button"
+onclick="cerrarModal()"
+class="btn-modern btn-danger">
+Cancelar
+</button>
+
+<button type="button"
+onclick="guardar()"
+class="btn-modern btn-ok">
+Guardar
+</button>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- DETALLE -->
+<div class="modal fade" id="detalleModal">
+
+<div class="modal-dialog">
+
+<div class="modal-content p-3">
+
+<h5>Detalle del Caso</h5>
+
+<p><b>CASO:</b> <span id="dCaso"></span></p>
+<p><b>Producto:</b> <span id="dTitulo"></span></p>
+<p><b>Cliente:</b> <span id="dCliente"></span></p>
+<p><b>Marca:</b> <span id="dMarca"></span></p>
+<p><b>Fecha:</b> <span id="dFecha"></span></p>
+<p><b>Técnico:</b> <span id="dTecnico"></span></p>
+<p><b>Prioridad:</b> <span id="dPrioridad"></span></p>
+<p><b>Estado:</b> <span id="dEstado"></span></p>
+<p><b>Descripción:</b> <span id="dDesc"></span></p>
+
+<div class="mt-3">
+
+<button
+id="btnEditarDetalle"
+onclick="editarDesdeDetalle()"
+class="btn-modern btn-warn">
+Editar
+</button>
+
+<button
+id="btnImprimirDetalle"
+onclick="imprimirTicket(ticketDetalleId)"
+class="btn-modern btn-main">
+Imprimir
+</button>
+
+<button
+id="btnOrdenServicio"
+onclick="crearOrdenDesdeTicket()"
+class="btn-modern btn-ok">
+Generar Orden de Servicio
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="modal fade" id="stockDetalleModal">
+
+<div class="modal-dialog">
+
+<div class="modal-content p-3">
+
+<h5>Detalle del Producto</h5>
+
+<p><b>Producto:</b> <span id="sdProducto"></span></p>
+<p><b>Marca:</b> <span id="sdMarca"></span></p>
+<p><b>Modelo:</b> <span id="sdModelo"></span></p>
+<p><b>Serie:</b> <span id="sdSerie"></span></p>
+<p><b>Estado:</b> <span id="sdEstado"></span></p>
+<p><b>Procedencia:</b> <span id="sdProcedencia"></span></p>
+<p><b>Garantía:</b> <span id="sdGarantia"></span></p>
+
+<div class="mt-3">
+
+<button
+class="btn-modern btn-warn"
+onclick="editarStock(stockDetalleId)">
+Editar
+</button>
+
+<button
+class="btn-modern btn-main"
+data-bs-dismiss="modal">
+Cerrar
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- MODAL ORDEN DE SERVICIO -->
+<div class="modal fade" id="modalOrden">
+
+<div class="modal-dialog modal-lg">
+
+<div class="modal-content p-3">
+
+<input type="hidden" id="osUsuarioCreacion">
+
+<h4>Nueva Orden de Servicio</h4>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <label>N° Orden</label>
+    <input
+    id="osNumero"
+    class="form-control mb-2"
+    readonly>
+  </div>
+
+  <div class="col-md-6">
+    <label>N° Caso</label>
+    <input
+    id="osCaso"
+    class="form-control mb-2"
+    readonly>
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <label>Fecha</label>
+    <input
+    id="osFecha"
+    type="date"
+    class="form-control mb-2">
+  </div>
+
+  <div class="col-md-6">
+    <label>Cliente</label>
+    <input
+    id="osCliente"
+    class="form-control mb-2">
+  </div>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <label>Producto</label>
+    <input
+    id="osProducto"
+    class="form-control mb-2">
+  </div>
+
+  <div class="col-md-6">
+    <label>Marca</label>
+    <input
+    id="osMarca"
+    class="form-control mb-2">
+  </div>
+
+</div>
+
+<div class="form-group">
+
+  <label>Observaciones</label>
+
+  <textarea
+  id="osAccesorios"
+  class="form-control"
+  rows="3"
+  placeholder=""></textarea>
+
+</div>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <label>Modelo</label>
+    <input
+    id="osModelo"
+    class="form-control mb-2">
+  </div>
+
+  <div class="col-md-6">
+    <label>N° de Serie</label>
+    <input
+    id="osSerie"
+    class="form-control mb-2">
+  </div>
+
+<div class="col-md-6">
+  <label>Teléfono</label>
+  <input
+  id="osTelefono"
+  class="form-control mb-2">
+</div>
+
+<div class="col-md-6">
+  <label>Dirección</label>
+  <input
+  id="osDireccion"
+  class="form-control mb-2">
+</div>
+
+<div class="col-md-6">
+  <label>Localidad</label>
+  <input
+  id="osLocalidad"
+  class="form-control mb-2">
+</div>
+
+<div class="col-md-6">
+  <label>Entre Calles</label>
+  <input
+  id="osEntreCalles"
+  class="form-control mb-2">
+</div>
+
+</div>
+
+<div class="form-group">
+
+
+
+</div>
+
+<div class="form-group">
+
+<div class="row">
+
+  <div class="col-md-6">
+
+    <label>Falla reportada por el cliente</label>
+
+    <textarea
+    id="osFalla"
+    class="form-control"
+    rows="4"
+    placeholder="Describa la falla informada por el cliente"></textarea>
+
+  </div>
+
+  <div class="col-md-6">
+
+    <label>Tarea a realizar</label>
+
+    <textarea
+    id="osTarea"
+    class="form-control"
+    rows="4"
+    placeholder="Indique qué debe realizar el chofer"></textarea>
+
+  </div>
+
+</div>
+
+</div>
+
+<div class="form-group">
+
+  <label>Modificacion De Credito</label>
+
+  <textarea
+  id="osObservaciones"
+  class="form-control"
+  rows="3"
+  placeholder="Observaciones adicionales"></textarea>
+
+</div>
+
+<hr>
+
+<div class="row mt-4">
+
+  <div class="col-md-6 text-center">
+
+    <br><br><br>
+
+    __________________________
+
+    <div>
+      Firma del Cliente
+    </div>
+
+  </div>
+
+  <div class="col-md-6 text-center">
+
+    <br><br><br>
+
+    __________________________
+
+    <div>
+      Firma y Sello de Service
+    </div>
+
+  </div>
+
+</div>
+
+<div class="alert alert-light mt-4" style="font-size:12px;">
+
+  <b>Importante:</b>
+
+  La empresa no se responsabiliza por datos, programas,
+  configuraciones, contraseñas o cualquier tipo de información
+  almacenada en el equipo ingresado.
+
+  <br><br>
+
+  Asimismo, cualquier accesorio, componente o elemento entregado
+  junto al equipo y que no se encuentre detallado en la presente
+  Orden de Servicio, no será considerado como recibido por la empresa,
+  quedando ésta exenta de responsabilidad ante reclamos posteriores.
+
+</div>
+
+<div class="text-right mt-3">
+
+  <button
+  type="button"
+  class="btn-modern btn-danger"
+  data-dismiss="modal">
+  Cancelar
+  </button>
+
+  <button
+  type="button"
+  onclick="guardarOrdenServicio()"
+  class="btn-modern btn-ok">
+  Guardar Orden
+  </button>
+
+  <button
+  type="button"
+  onclick="eliminarOrdenServicio()"
+  class="btn-modern btn-danger">
+  Eliminar Orden
+  </button>
+
+  <button
+  type="button"
+  onclick="validarImpresionOrden()"
+  class="btn-modern btn-main">
+  Imprimir
+  </button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+

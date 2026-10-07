@@ -1,0 +1,38 @@
+<!-- LOGS -->
+<div id="logs">
+
+<div class="mb-2">
+
+<input id="fUser" class="form-control" placeholder="Usuario">
+<input id="fAccion" class="form-control" placeholder="Acción">
+
+<input type="date" class="form-control" id="fDesde">
+<input type="date" class="form-control" id="fHasta">
+
+<button onclick="cargarLogs()" class="btn-modern btn-main">
+Filtrar
+</button>
+
+<button onclick="exportLogs()" class="btn-modern btn-ok">
+Exportar CSV
+</button>
+
+</div>
+
+<table class="table table-striped">
+
+<thead>
+<tr>
+<th>Usuario</th>
+<th>Acción</th>
+<th>Detalle</th>
+<th>Nivel</th>
+<th>Fecha</th>
+</tr>
+</thead>
+
+<tbody id="listaLogs"></tbody>
+
+</table>
+
+</div>

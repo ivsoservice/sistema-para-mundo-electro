@@ -1,0 +1,153 @@
+<!-- PANEL // KPI ROW -->
+<div id="kpiPanel" class="row mb-3">
+
+  <div class="col-md-4">
+    <div class="card-box kpi">
+      <h5>Total Tickets</h5>
+      <h2 id="total">0</h2>
+      <i class="fa-solid fa-ticket-simple card-icon"></i>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card-box kpi">
+      <h5>Pago Diario</h5>
+      <h2 id="cDiario">0</h2>
+      <i class="fa-solid fa-cash-register card-icon"></i>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card-box kpi">
+      <h5>Distribuidora</h5>
+      <h2 id="cDistribuidora">0</h2>
+      <i class="fa-solid fa-truck card-icon"></i>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ESTADOS -->
+<div class="row mb-3">
+
+  <div class="col-md-3">
+    <div class="card-box bg-main">
+
+      <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+          <h5>Ingresados</h5>
+          <h2 id="tIngresados">0</h2>
+        </div>
+
+        <i class="fa-solid fa-inbox"
+           style="font-size:42px;opacity:0.45;"></i>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="col-md-3">
+    <div class="card-box bg-warn">
+
+      <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+          <h5>En proceso</h5>
+          <h2 id="tProceso">0</h2>
+        </div>
+
+        <i class="fa-solid fa-gears"
+           style="font-size:42px;opacity:0.45;"></i>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="col-md-3">
+    <div class="card-box bg-ok">
+
+      <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+          <h5>Resueltos</h5>
+          <h2 id="tResueltos">0</h2>
+        </div>
+
+        <i class="fa-solid fa-circle-check"
+           style="font-size:42px;opacity:0.45;"></i>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="col-md-3">
+    <div class="card-box bg-main">
+
+      <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+          <h5>Eliminados</h5>
+          <h2 id="tEliminados">0</h2>
+        </div>
+
+        <i class="fa-solid fa-trash"
+           style="font-size:42px;opacity:0.45;"></i>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+<!-- BUSCADOR -->
+<div id="buscadorTicketsPanel" class="mb-4">
+
+  <div style="position:relative; max-width:600px;">
+
+    <div class="search-wrapper">
+
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+
+      <input
+        id="buscadorTickets"
+        class="form-control search-input"
+        placeholder="🔍 Buscar ticket por caso, cliente o marca..."
+      >
+
+      <div id="resultadosBusqueda"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="estadisticasService"
+     class="card-box text-center mt-3"
+     style="min-height:180px; display:flex; align-items:center; justify-content:center;">
+
+  <div>
+    <i class="fa-solid fa-chart-column"
+       style="font-size:40px; opacity:0.35;"></i>
+
+    <h5 class="mt-3">
+  <b>En este espacio van a estar las futuras estadísticas del Service y de Ventas</b>
+</h5>
+
+    <p class="text-muted mb-0">
+      Próximamente
+    </p>
+  </div>
+
+</div>

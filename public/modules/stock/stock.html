@@ -1,0 +1,208 @@
+<div id="stock" class="card">
+
+
+<div class="card-header">
+  <h3 class="card-title">Stock Service</h3>
+
+  <div id="stockEditandoInfo"
+       class="alert alert-warning mt-2"
+       style="display:none;">
+  </div>
+
+</div>
+
+    <div class="card-body">
+
+<div class="row">
+
+  <div class="col-md-6 mb-2">
+    <input id="stockProducto" class="form-control" placeholder="Producto">
+  </div>
+
+  <div class="col-md-3 mb-2">
+    <input id="stockMarca" class="form-control" placeholder="Marca">
+  </div>
+
+  <div class="col-md-3 mb-2">
+    <input id="stockModelo" class="form-control" placeholder="Modelo">
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <input id="stockNumeroSerie" class="form-control" placeholder="Número de Serie">
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <select id="stockEstado" class="form-control">
+      <option value="">Estado</option>
+      <option>Nuevo</option>
+      <option>Semi Nuevo</option>
+      <option>Usado</option>
+      <option>Reparable</option>
+      <option>Para Repuesto</option>
+      <option>Nota de Crédito</option>
+    </select>
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <input id="stockFechaIngreso" type="date" class="form-control">
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <select id="stockProcedencia" class="form-control">
+      <option value="">Procedencia</option>
+      <option>Retiro</option>
+      <option>Exhibición</option>
+    </select>
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <select id="stockGarantiaActivo" class="form-control">
+      <option value="">Garantía</option>
+      <option value="Si">Sí</option>
+      <option value="No">No</option>
+    </select>
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <select id="stockGarantiaDuracion" class="form-control">
+      <option value="">Duración</option>
+      <option>3 meses</option>
+      <option>6 meses</option>
+      <option>12 meses</option>
+      <option>24 meses</option>
+    </select>
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <select id="stockReparado" class="form-control">
+      <option value="">Reparado</option>
+      <option value="Si">Sí</option>
+      <option value="No">No</option>
+    </select>
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <select id="stockTipoReparacion" class="form-control">
+      <option value="">Tipo de reparación</option>
+      <option>Service Autorizado</option>
+      <option>Service Particular</option>
+    </select>
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <input id="stockEmpresaReparadora" class="form-control" placeholder="Empresa reparadora">
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <input id="stockTecnicoReparador" class="form-control" placeholder="Técnico reparador">
+  </div>
+
+  <div class="col-12">
+    <hr>
+    <h6><b>Observaciones Inteligentes</b></h6>
+  </div>
+
+  <div class="col-md-4 mb-2">
+    <select id="stockEstadoEstetico" class="form-control">
+      <option value="">Estado Estético</option>
+      <option>Excelente</option>
+      <option>Muy Bueno</option>
+      <option>Bueno</option>
+      <option>Regular</option>
+      <option>Malo</option>
+    </select>
+  </div>
+
+  <div class="col-md-8 mb-2">
+    <input id="stockAccesorios" class="form-control" placeholder="Accesorios incluidos">
+  </div>
+
+  <div class="col-md-6 mb-2">
+    <input id="stockFaltantes" class="form-control" placeholder="Faltantes">
+  </div>
+
+  <div class="col-md-6 mb-2">
+    <textarea id="stockDetallesTecnicos" class="form-control" rows="2" placeholder="Detalles técnicos"></textarea>
+  </div>
+
+  <div class="col-12 mb-3">
+    <textarea id="stockComentariosInternos" class="form-control" rows="3" placeholder="Comentarios internos"></textarea>
+  </div>
+
+</div>
+
+<button
+  id="btnGuardarStock"
+  class="btn btn-success mb-3"
+  onclick="guardarStock()">
+  Guardar
+</button>
+
+<button
+  id="btnCancelarEdicion"
+  class="btn btn-secondary mb-3"
+  style="display:none;"
+  onclick="cancelarEdicionStock()">
+  Cancelar edición
+</button>
+
+
+<button class="btn btn-primary mb-3" onclick="cargarStock()">
+  Cargar Stock
+</button>
+
+<div class="card mt-4">
+
+  <div class="card-header">
+    <h3 class="card-title">Productos en Stock</h3>
+  </div>
+
+  <div class="card-body">
+
+ <div class="row mb-3">
+
+  <div class="col-md-4">
+    <select id="filtroEstado" class="form-control">
+      <option value="">Todos los estados</option>
+      <option>Nuevo</option>
+      <option>Semi Nuevo</option>
+      <option>Usado</option>
+      <option>Reparable</option>
+      <option>Para Repuesto</option>
+      <option>Nota de Crédito</option>
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <select id="filtroProcedencia" class="form-control">
+      <option value="">Todas las procedencias</option>
+      <option>Retiro</option>
+      <option>Exhibición</option>
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <select id="filtroGarantia" class="form-control">
+      <option value="">Con y sin garantía</option>
+      <option value="Si">Con garantía</option>
+      <option value="No">Sin garantía</option>
+    </select>
+  </div>
+
+</div>
+
+
+    <input
+      id="buscarStock"
+      class="form-control mb-3"
+      placeholder="🔍 Buscar producto...">
+
+    <div id="stockTabla"></div>
+
+  </div>
+
+</div>
+
+</div>
+</div>
+</div>

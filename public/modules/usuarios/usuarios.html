@@ -1,0 +1,26 @@
+<!-- USERS -->
+<div id="usuarios">
+
+<div class="mb-2">
+
+<input id="newUser" class="form-control" placeholder="Usuario">
+
+<input id="newPass" class="form-control" placeholder="Pass">
+
+<select id="newRole" class="form-control">
+  <option value="" disabled selected>Elegí rol</option>
+  <option value="user">Usuario</option>
+  <option value="admin">Admin</option>
+</select>
+
+<button onclick="crearUsuario()" class="btn-modern btn-main">
+Crear
+</button>
+
+</div>
+
+<table class="table table-hover table-striped">
+<tbody id="listaUsuarios"></tbody>
+</table>
+
+</div>
